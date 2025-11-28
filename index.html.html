@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 미래 설계 스테이션 (Future Blueprint)</title>
+    <!-- Tailwind CSS CDN 로드 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* 커스텀 폰트 및 기본 설정 */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght=100..900&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0d0e14; /* Dark/Space background */
+        }
+        /* 결과 텍스트를 위한 스타일 (pre-wrap 유지) */
+        .result-text {
+            white-space: pre-wrap;
+        }
+        /* 스크롤바 스타일링 (다크 모드 최적화) */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background-color: #007bff;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background-color: #1f2937;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+
+    <!-- 메인 컨테이너 -->
+    <div class="w-full max-w-4xl rounded-xl shadow-2xl p-6 md:p-10 border-t-4 border-blue-500 bg-gray-800">
+
+        <!-- 1. 입력 폼 뷰 (초기 화면) -->
+        <div id="formView" class="transition-opacity duration-500">
+            <!-- Header -->
+            <h1 class="text-3xl md:text-4xl font-extrabold text-white uppercase tracking-wider text-center pb-3 mb-6 border-b-2 border-yellow-400">
+                AI 미래 설계 스테이션 
+            </h1>
+
+            <!-- Input Form Section -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <!-- 닉네임 -->
+                <div class="flex flex-col">
+                    <label for="nickname" class="text-yellow-400 font-bold mb-1 uppercase text-sm">닉네임</label>
+                    <input type="text" id="nickname" placeholder="선수명 (닉네임)" required
+                           class="p-3 bg-gray-700 text-white rounded-lg border border-gray-600 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 transition duration-300">
+                </div>
+
+                <!-- 달성 희망 시점 -->
+                <div class="flex flex-col">
+                    <label for="targetTime" class="text-yellow-400 font-bold mb-1 uppercase text-sm">달성 희망 시점 (예: 2028년 12월)</label>
+                    <input type="text" id="targetTime" placeholder="목표 달성 데드라인" required
+                           class="p-3 bg-gray-700 text-white rounded-lg border border-gray-600 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 transition duration-300">
+                </div>
+                
+                <!-- 현재 가장 중요한 목표 -->
+                <div class="flex flex-col md:col-span-2">
+                    <label for="mainGoal" class="text-yellow-400 font-bold mb-1 uppercase text-sm">현재 가장 중요한 목표</label>
+                    <textarea id="mainGoal" placeholder="구체적인 목표를 설명해 주세요." required
+                              class="p-3 bg-gray-700 text-white rounded-lg border border-gray-600 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 transition duration-300 resize-y min-h-[100px]"></textarea>
+                </div>
+
+                <!-- 현재 나의 강점 -->
+                <div class="flex flex-col">
+                    <label for="myStrength" class="text-yellow-400 font-bold mb-1 uppercase text-sm">현재 나의 강점</label>
+                    <textarea id="myStrength" placeholder="목표 달성에 도움이 될 강점/자원"
+                              class="p-3 bg-gray-700 text-white rounded-lg border border-gray-600 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 transition duration-300 resize-y min-h-[100px]"></textarea>
+                </div>
+
+                <!-- 장애물 (선택 사항) - required 속성 없음 -->
+                <div class="flex flex-col">
+                    <label for="obstacle" class="text-yellow-400 font-bold mb-1 uppercase text-sm">장애물 (선택 사항)</label>
+                    <textarea id="obstacle" placeholder="목표 달성을 가로막는 요소"
+                              class="p-3 bg-gray-700 text-white rounded-lg border border-gray-600 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 transition duration-300 resize-y min-h-[100px]"></textarea>
+                </div>
+            </div>
+            
+            <!-- Action Button -->
+            <button onclick="register()"
+                    class="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-lg uppercase rounded-lg shadow-xl transition duration-300 transform hover:scale-[1.01] focus:outline-none focus:ring-4 focus:ring-blue-500 focus:ring-opacity-50">
+                미래 생성 (Go!)
+            </button>
+            
+            <!-- Footer Actions: "대회 시작" 버튼이 삭제됨 -->
+            <!-- <div class="flex justify-center mt-6"> </div> -->
+        </div>
+
+        <!-- 2. 결과 분석 뷰 (숨겨진 상태) -->
+        <div id="resultView" class="hidden transition-opacity duration-500">
+            <h1 class="text-3xl md:text-4xl font-extrabold text-white uppercase tracking-wider text-center pb-3 mb-6 border-b-2 border-yellow-400">
+                ✅ AI 미래 설계 결과
+            </h1>
+            
+            <div class="bg-gray-700 border-2 border-yellow-400 rounded-lg p-6">
+                <h2 class="text-2xl text-blue-400 font-bold uppercase mb-4 border-b border-gray-600 pb-2">
+                    선수: <span id="resultNickname" class="text-yellow-400"></span>
+                </h2>
+                <p class="text-gray-400 mb-6">목표 달성 시점: <span id="resultTargetTime" class="text-white"></span></p>
+
+                <!-- 시나리오 결과 -->
+                <div class="mb-4">
+                    <label class="text-white font-medium block mb-2 text-lg">✨ AI 창작 미래 시나리오</label>
+                    <div id="scenarioResult"
+                         class="result-text bg-gray-900 p-4 rounded-lg text-gray-300 text-base border-l-4 border-yellow-400 min-h-[100px] custom-scrollbar overflow-y-auto max-h-60 animate-pulse">
+                        데이터 로딩 중...
+                    </div>
+                </div>
+
+                <!-- 로드맵 결과 -->
+                <div>
+                    <label class="text-white font-medium block mb-2 text-lg">🗺️ 미래 목표 달성 로드맵</label>
+                    <div id="roadmapResult"
+                         class="result-text bg-gray-900 p-4 rounded-lg text-gray-300 text-base border-l-4 border-yellow-400 min-h-[100px] custom-scrollbar overflow-y-auto max-h-60 animate-pulse">
+                        데이터 로딩 중...
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer Actions -->
+            <div class="flex flex-col sm:flex-row gap-4 mt-8">
+                <button id="resetButton" onclick="resetForm()"
+                        class="flex-1 py-3 bg-gray-600 hover:bg-gray-700 text-white font-bold rounded-lg transition duration-300">
+                    새로운 설계 시작 (초기화)
+                </button>
+                <button onclick="showModal('saveResult')"
+                        class="flex-1 py-3 bg-green-500 hover:bg-green-600 text-white font-bold rounded-lg transition duration-300">
+                    결과 저장 (FireStore 연동 예정)
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Modal Structure (Replacing alert()) -->
+    <div id="customModal" class="fixed inset-0 bg-black bg-opacity-70 hidden items-center justify-center p-4 z-50">
+        <div class="bg-gray-800 rounded-xl p-6 w-full max-w-sm transform transition-all shadow-2xl border-t-4 border-blue-500">
+            <h3 id="modalTitle" class="text-xl font-bold text-yellow-400 mb-4 border-b border-gray-600 pb-2">알림</h3>
+            <p id="modalMessage" class="text-gray-300 mb-6"></p>
+            <div class="flex justify-end">
+                <button onclick="hideModal()"
+                        class="px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition duration-300">
+                    확인
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 핵심 요구 사항: API 서버 주소 상수 정의
+        const SERVER_URL = ""; // << 다음 단계에서 백엔드 서버 주소를 여기에 삽입합니다.
+
+        // --- View Elements ---
+        const formView = document.getElementById('formView');
+        const resultView = document.getElementById('resultView');
+        const scenarioResult = document.getElementById('scenarioResult');
+        const roadmapResult = document.getElementById('roadmapResult');
+        const resultNickname = document.getElementById('resultNickname');
+        const resultTargetTime = document.getElementById('resultTargetTime');
+
+        // --- Modal Functions ---
+        const modal = document.getElementById('customModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalMessage = document.getElementById('modalMessage');
+
+        /**
+         * 커스텀 모달을 표시하는 함수.
+         * @param {string} type - 'validation', 'error', 'nextStep', 'saveResult' 중 하나 또는 일반 메시지 문자열.
+         * @param {string=} message - 표시할 메시지 (type이 일반 메시지일 때 사용).
+         */
+        function showModal(type, message = '') {
+            if (type === 'validation') {
+                modalTitle.innerText = "🚨 필수 정보 누락";
+                modalMessage.innerText = "닉네임, 목표, 희망 시점은 미래 설계를 위한 필수 입력 사항입니다.";
+            } else if (type === 'error') {
+                modalTitle.innerText = "❌ 통신 오류";
+                modalMessage.innerText = message || "API 통신에 실패했습니다. 서버 URL 및 상태를 확인해주세요.";
+            } else if (type === 'nextStep') {
+                modalTitle.innerText = "✅ 다음 단계 준비 완료";
+                modalMessage.innerText = "이 코드를 GitHub Pages에 배포하고, 다음 주차에 Backend 서버를 구축하여 SERVER_URL에 연결할 준비가 완료되었습니다!";
+            } else if (type === 'saveResult') {
+                modalTitle.innerText = "💾 저장 기능 안내";
+                modalMessage.innerText = "이 기능은 다음 주차에 Firestore 데이터베이스 연동을 통해 구현될 예정입니다.";
+            }
+             else {
+                modalTitle.innerText = "알림";
+                modalMessage.innerText = type; // type 자체를 메시지로 사용
+            }
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        /**
+         * 커스텀 모달을 숨기는 함수.
+         */
+        function hideModal() {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+        
+        /**
+         * 입력 폼을 숨기고 결과 뷰를 표시하며 데이터를 채웁니다.
+         * @param {Object} data - 사용자 입력 데이터.
+         * @param {Object} resultData - AI 결과 데이터.
+         */
+        function displayResultView(data, resultData) {
+            // 결과 헤더 정보 업데이트
+            resultNickname.innerText = data.nickname;
+            resultTargetTime.innerText = data.targetTime;
+
+            // 결과 내용 업데이트
+            scenarioResult.innerText = resultData.scenario || "AI 시나리오 결과가 없습니다.";
+            roadmapResult.innerText = resultData.roadmap || "AI 로드맵 결과가 없습니다.";
+
+            // 로딩 애니메이션 제거
+            scenarioResult.classList.remove('animate-pulse');
+            roadmapResult.classList.remove('animate-pulse');
+
+            // 뷰 전환: 폼 숨기기, 결과 표시
+            formView.classList.add('hidden');
+            resultView.classList.remove('hidden');
+        }
+
+        /**
+         * '미래 생성' 버튼 클릭 시 실행되는 함수
+         * 입력 데이터를 모아 SERVER_URL로 POST 요청을 보냅니다.
+         */
+        function register() {
+            // 1. 입력 필드의 데이터 수집
+            const data = {
+                nickname: document.getElementById('nickname').value.trim(),
+                mainGoal: document.getElementById('mainGoal').value.trim(),
+                targetTime: document.getElementById('targetTime').value.trim(),
+                myStrength: document.getElementById('myStrength').value.trim(),
+                obstacle: document.getElementById('obstacle').value.trim()
+            };
+
+            // 필수 입력 필드 검증 (커스텀 모달 사용)
+            if (!data.nickname || !data.mainGoal || !data.targetTime) {
+                showModal('validation');
+                return;
+            }
+
+            // 결과 영역 초기화 (로딩 상태 표시)
+            scenarioResult.innerText = "데이터 전송 중... AI가 미래를 설계하고 있습니다. 잠시만 기다려주세요.";
+            roadmapResult.innerText = "로드맵 분석 중...";
+            scenarioResult.classList.add('animate-pulse');
+            roadmapResult.classList.add('animate-pulse');
+
+
+            // 2. fetch 함수를 이용한 API 통신 (POST)
+            fetch(SERVER_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data) // 입력 필드의 데이터를 모아 JSON 형태로 서버에 전송
+            })
+            .then(response => {
+                if (!response.ok) {
+                    // HTTP 4xx, 5xx 에러 처리
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(resultData => {
+                // 정상 응답 시, AI 결과를 화면에 표시
+                displayResultView(data, resultData);
+            })
+            .catch(error => {
+                console.error('API 통신 오류:', error);
+                
+                // 3. 서버 주소가 비어있거나 통신 오류 발생 시 처리 (가상 데이터 생성)
+                if (SERVER_URL === "") {
+                    // 가상 데이터 생성
+                    const mockResult = {
+                        scenario: `[AI 창작 미래 시나리오 - 가상 데이터]\n\n${data.targetTime}의 ${data.nickname}님은 목표("${data.mainGoal}")를 성공적으로 달성했습니다. 당신의 강점(${data.myStrength || '미입력'}) 덕분에 장애물(${data.obstacle || '없음'})을 극복하고, 현재보다 훨씬 만족스러운 삶을 살고 있습니다. 당신은 목표 달성 후 새로운 도전을 준비하고 있습니다.`,
+                        roadmap: `[미래 목표 달성 로드맵 - 가상 데이터]\n\n1. 핵심 역량 강화: ${data.myStrength || '미입력된 강점'}을(를) 활용하여 3개월 간 집중 학습.\n2. 장애물 제거: ${data.obstacle || '없음'} 극복을 위한 주간 계획 수립.\n3. 최종 점검: 6개월 후 중간 목표 달성 여부 확인 및 최종 목표 시뮬레이션.`
+                    };
+                    displayResultView(data, mockResult);
+
+                } else {
+                    // 실제 통신 오류 시 모달 표시
+                    showModal('error', `통신에 실패했습니다: ${error.message}`);
+                    // 로딩 상태 초기화
+                    scenarioResult.classList.remove('animate-pulse');
+                    roadmapResult.classList.remove('animate-pulse');
+                }
+            });
+        }
+        
+        /**
+         * 폼 데이터를 초기화하고 폼 뷰로 돌아가는 함수
+         */
+        function resetForm() {
+            // 폼 데이터 초기화
+            document.getElementById('nickname').value = '';
+            document.getElementById('mainGoal').value = '';
+            document.getElementById('targetTime').value = '';
+            document.getElementById('myStrength').value = '';
+            document.getElementById('obstacle').value = '';
+
+            // 뷰 전환: 결과 숨기기, 폼 표시
+            resultView.classList.add('hidden');
+            formView.classList.remove('hidden');
+
+            console.log("폼이 초기화되고 초기 화면으로 돌아갔습니다.");
+        }
+        
+    </script>
+</body>
+</html>
