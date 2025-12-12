@@ -12,13 +12,10 @@
             font-family: 'Inter', sans-serif;
             background-color: #0d0e14; /* Dark/Space background */
         }
-        /* 텍스트 줄바꿈 스타일 유지 (HTML로 바꿨으므로 필요성은 감소) */
-        .result-text {
-            white-space: pre-wrap;
-        }
         /* 스크롤바 스타일링 (다크 모드 최적화) */
         .custom-scrollbar::-webkit-scrollbar {
-            width: 8px;
+            height: 8px; /* 수평 스크롤바 높이 */
+            width: 8px; /* 수직 스크롤바 너비 */
         }
         .custom-scrollbar::-webkit-scrollbar-thumb {
             background-color: #007bff;
@@ -27,29 +24,42 @@
         .custom-scrollbar::-webkit-scrollbar-track {
             background-color: #1f2937;
         }
+        /* 로드맵 컨테이너 (수평 스크롤 허용) */
+        .horizontal-roadmap {
+            display: flex;
+            overflow-x: auto;
+            white-space: nowrap; /* 자식 요소가 줄바꿈되지 않도록 설정 */
+            padding-bottom: 1rem;
+        }
+        /* 개별 단계 (Phase) 박스 */
+        .phase-box {
+            flex: 0 0 300px; /* 고정 너비 설정 */
+            min-height: 250px;
+            margin-right: 1.5rem;
+            padding: 1.25rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+        /* 단계 연결선 (수평적 흐름 강조) */
+        .phase-connector {
+            position: absolute;
+            top: 20px;
+            right: -25px; /* 다음 박스와의 간격 절반 */
+            width: 25px;
+            height: 4px;
+            background-color: #4b5563; /* Gray line */
+            z-index: 0;
+        }
+        .phase-box:last-child .phase-connector {
+            display: none; /* 마지막 박스는 연결선 없음 */
+        }
         /* 리스트 스타일 */
         .roadmap-list {
             list-style-type: disc;
             margin-left: 1.5rem;
             color: #ccc;
-        }
-        /* 월별 박스 스타일링 */
-        .month-box {
-            background-color: #1f2937; /* Darker background for separation */
-            border-left: 5px solid;
-            padding: 1rem;
-            border-radius: 0.5rem;
-            margin-bottom: 1rem;
-            transition: transform 0.2s;
-        }
-        .month-box:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-        }
-        .month-box-header {
-            font-weight: bold;
-            font-size: 1.25rem;
-            margin-bottom: 0.5rem;
+            font-size: 0.875rem; /* Small text */
         }
     </style>
 </head>
@@ -120,9 +130,9 @@
                 </div>
 
                 <div>
-                    <label class="text-white font-medium block mb-2 text-lg">🗺️ 새해 목표 달성 1년 플랜 (월별)</label>
+                    <label class="text-white font-medium block mb-2 text-lg">🗺️ 새해 목표 달성 1년 플랜 (단계별 흐름)</label>
                     <div id="roadmapResult"
-                            class="bg-gray-900 p-4 rounded-lg text-gray-300 text-base min-h-[100px] custom-scrollbar overflow-y-auto max-h-96 animate-pulse">
+                            class="bg-gray-900 p-4 rounded-lg text-gray-300 text-base min-h-[100px] custom-scrollbar custom-scrollbar overflow-x-auto">
                         데이터 로딩 중...
                     </div>
                 </div>
@@ -228,49 +238,67 @@
         }
 
         /**
-         * 월별 계획 생성 함수 (가상 데이터)
+         * 단계별 (Phase) 로드맵 생성 함수 (가상 데이터)
          * @param {number} year - 목표 연도.
          * @param {Object} data - 사용자 입력 데이터.
-         * @returns {string} - HTML 형식의 월별 계획.
+         * @returns {string} - HTML 형식의 수평 단계별 계획.
          */
-        function generateMonthlyPlan(year, data) {
-            let planHtml = `<div class="font-bold text-lg text-yellow-400 mb-3">[🗺️ ${year}년 월별 목표 달성 1년 플랜]</div>`;
-            planHtml += `<p class="text-white mb-4"><strong>🎯 최종 목표:</strong> ${data.mainGoal}</p>`;
+        function generatePhasedRoadmap(year, data) {
+            let planHtml = `<div class="horizontal-roadmap custom-scrollbar">`;
 
             const mainGoal = data.mainGoal;
-            const strength = data.myStrength || '핵심 강점';
+            const strength = data.myStrength || '미입력된 강점';
             const obstacle = data.obstacle || '없음';
 
-            // 월별 주요 테마 설정 (12개월 플랜)
-            const monthlyThemes = {
-                1: { title: "기초 설계 및 자료 수집", color: "border-blue-500", activity: `목표 달성을 위한 필수 자료와 참고 문헌 조사. ${mainGoal}의 범위 설정.` },
-                2: { title: "핵심 기술 학습 (1/4)", color: "border-blue-500", activity: `가장 중요한 기술/지식 분야 집중 학습. 주 20시간 학습 플랜 실행.` },
-                3: { title: "핵심 기술 학습 (2/4)", color: "border-green-500", activity: `학습 내용 기반으로 소규모 프로젝트 1개 완성. ${strength}을 활용할 방안 모색.` },
-                4: { title: "중간 점검 및 피드백", color: "border-green-500", activity: `1분기 목표 달성률 검토 및 계획 수정. 전문가 멘토 1인 컨택 시도.` },
-                5: { title: "실무 적용 프로젝트 (1/3)", color: "border-yellow-500", activity: `실제 ${mainGoal}과 관련된 실무형 프로젝트 시작. 주간 진척도 보고서 작성.` },
-                6: { title: "실무 적용 프로젝트 (2/3) 및 장애물 대응", color: "border-yellow-500", activity: `프로젝트 완성도 50% 달성. 예상되는 ${obstacle}에 대한 구체적인 대응 전략 수립 및 실행.` },
-                7: { title: "기술 심화 및 보완", color: "border-orange-500", activity: `프로젝트를 통해 발견된 약점 분야 집중 보완. 관련 최신 트렌드 벤치마킹.` },
-                8: { title: "실무 적용 프로젝트 (3/3) 마무리", color: "border-orange-500", activity: `프로젝트 최종 완성 및 내부/외부 피드백 수렴. (마일스톤: 목표 70% 달성)` },
-                9: { title: "경력/성과 포트폴리오 초안", color: "border-red-500", activity: `지금까지의 성과를 정리한 포트폴리오 초안 작성. 최종 목표 결과물의 윤곽 확정.` },
-                10: { title: "최종 결과물 제작 집중 (1/2)", color: "border-red-500", activity: `최종 목표 달성을 위한 결과물 제작에 전념. 하루 4시간 이상 집중 시간 확보.` },
-                11: { title: "최종 결과물 제작 집중 (2/2) 및 검토", color: "border-purple-500", activity: `결과물 완성도 95% 달성. 최종 검토 및 작은 오류/약점 보완.` },
-                12: { title: "최종 목표 달성 및 회고", color: "border-purple-500", activity: `최종 결과물 제출/발표 및 목표 달성 완료. 1년 플랜에 대한 상세 회고록 작성.` }
-            };
+            const phases = [
+                {
+                    title: "1단계: 기초 강화 및 설계",
+                    period: `${year}년 1월 ~ 4월 (4개월)`,
+                    color: "border-green-500",
+                    activities: [
+                        `핵심 지식 및 필수 기술 ${strength}에 대한 심화 학습 (총 학습 시간 160시간 목표).`,
+                        `목표 (${mainGoal}) 달성을 위한 구체적인 중간 목표 2가지 설정.`,
+                        `장애물 ${obstacle}을 피하기 위한 사전 자료 수집 및 환경 구축.`
+                    ]
+                },
+                {
+                    title: "2단계: 실무 프로젝트 및 보완",
+                    period: `${year}년 5월 ~ 8월 (4개월)`,
+                    color: "border-yellow-500",
+                    activities: [
+                        `실무 규모의 검증 프로젝트 시작 및 완료 (프로젝트 진척도 70% 달성).`,
+                        `월 1회 전문가 피드백을 통해 약점 (필요 시 ${obstacle} 관련) 집중 보완.`,
+                        `강점을 실제 결과로 전환하기 위한 기술 적용 실험 3회 수행.`
+                    ]
+                },
+                {
+                    title: "3단계: 최종 결과물 완성 및 달성",
+                    period: `${year}년 9월 ~ 12월 (4개월)`,
+                    color: "border-red-500",
+                    activities: [
+                        `최종 목표 결과물 완성도 100% 달성 및 제출 준비.`,
+                        `1년의 성과를 담은 전문 포트폴리오 완성 및 경력 정리.`,
+                        `${year}년 12월 목표 달성 회고록 작성 및 다음 비전 수립.`
+                    ]
+                }
+            ];
 
-            // 월별 박스 생성
-            for (let month = 1; month <= 12; month++) {
-                const theme = monthlyThemes[month];
+            phases.forEach((phase, index) => {
+                let activityList = phase.activities.map(activity => `<li>${activity}</li>`).join('');
+
                 planHtml += `
-                    <div class="month-box ${theme.color}">
-                        <div class="month-box-header text-blue-300">📅 ${year}년 ${month}월: ${theme.title}</div>
-                        <ul class="roadmap-list text-sm space-y-1">
-                            <li><strong>핵심 활동:</strong> ${theme.activity}</li>
-                            <li><strong>점검 사항:</strong> ${month}월 말까지 목표 대비 진척도를 반드시 확인.</li>
+                    <div class="phase-box bg-gray-800 ${phase.color}">
+                        ${index < phases.length - 1 ? '<div class="phase-connector"></div>' : ''}
+                        <div class="text-xl font-bold text-white mb-2">${phase.title}</div>
+                        <div class="text-sm text-gray-400 mb-4">${phase.period}</div>
+                        <ul class="roadmap-list text-gray-300 space-y-2">
+                            ${activityList}
                         </ul>
                     </div>
                 `;
-            }
+            });
 
+            planHtml += `</div>`;
             return planHtml;
         }
 
@@ -302,10 +330,9 @@
             // 목표 연도 추출
             const targetYearMatch = data.targetTime.match(/(\d{4})년/);
             const targetYear = targetYearMatch ? parseInt(targetYearMatch[1]) : new Date().getFullYear() + 1;
-            const fixedTargetTime = `${targetYear}년 12월`; 
-
+            
             // 2. fetch 함수를 이용한 API 통신 (POST)
-            fetch(SERVER_URL + '/register', { // API 주소 뒤에 경로가 있다면 추가 (없다면 SERVER_URL만 사용)
+            fetch(SERVER_URL + '/register', { // API 주소 뒤에 경로가 있다면 추가 
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -329,6 +356,8 @@
                 
                 // --- 가상 데이터 로직 ---
                 
+                const fixedTargetTime = `${targetYear}년 12월`; 
+
                 // AI 시나리오 생성
                 const scenarioHtml = `
                     <div class="font-bold text-lg text-yellow-400 mb-3">✨ ${targetYear}년 12월 미래 성공 요약 (현실적)</div>
@@ -339,8 +368,8 @@
                     </ul>
                 `;
 
-                // 월별 상세 로드맵 생성 (요청 사항 반영)
-                const roadmapContent = generateMonthlyPlan(targetYear, data);
+                // 단계별 상세 로드맵 생성 (요청 사항 반영)
+                const roadmapContent = generatePhasedRoadmap(targetYear, data);
                 
                 const mockResult = {
                     scenario: scenarioHtml,
