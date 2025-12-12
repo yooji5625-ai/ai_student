@@ -131,7 +131,7 @@
             
             <button onclick="register()"
                     class="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-lg uppercase rounded-lg shadow-xl transition duration-300 transform hover:scale-[1.01] focus:outline-none focus:ring-4 focus:ring-blue-500 focus:ring-opacity-50">
-                새해 플랜 생성             </button>
+                미래 설계 (Go!)             </button>
         </div>
 
         <div id="resultView" class="hidden transition-opacity duration-500">
@@ -337,87 +337,4 @@
                 mainGoal: document.getElementById('mainGoal').value.trim(),
                 targetTime: document.getElementById('targetTime').value.trim(),
                 myStrength: document.getElementById('myStrength').value.trim(),
-                obstacle: document.getElementById('obstacle').value.trim()
-            };
-
-            // 필수 입력 필드 검증 
-            if (!data.nickname || !data.mainGoal || !data.targetTime) {
-                showModal('validation');
-                return;
-            }
-
-            // 목표 연도 추출
-            const targetYearMatch = data.targetTime.match(/(\d{4})/);
-            const targetYear = targetYearMatch ? parseInt(targetYearMatch[1]) : new Date().getFullYear() + 1;
-            const fixedTargetTime = `${targetYear}년 12월 31일`;
-
-            // 결과 영역 초기화 (로딩 상태 표시)
-            scenarioResult.innerHTML = "데이터 전송 중... AI가 미래를 설계하고 있습니다. 잠시만 기다려주세요.";
-            roadmapResult.innerHTML = "로드맵 분석 중...";
-            scenarioResult.classList.add('animate-pulse');
-            roadmapResult.classList.add('animate-pulse');
-
-            // 2. fetch 함수를 이용한 API 통신 (POST) - (SERVER_URL이 비어있으므로 바로 catch 블록으로 이동)
-            fetch(SERVER_URL, { 
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', },
-                body: JSON.stringify(data) 
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then(resultData => {
-                // API 통신 성공 시
-                displayResultView(data, resultData);
-            })
-            .catch(error => {
-                console.error('API 통신 오류:', error);
-                
-                // 3. 통신 오류 발생 시 처리 (가상 데이터 생성) - 서버 URL이 비어있으므로 이 블록이 실행됨
-                
-                // AI 시나리오 생성 (HTML 구조)
-                const scenarioHtml = `
-                    <div class="font-bold text-lg text-yellow-400 mb-3">✨ ${fixedTargetTime} 미래 성공 요약 (현실적)</div>
-                    <ul class="list-decimal ml-5 text-gray-300 space-y-1">
-                        <li><strong>목표 달성:</strong> ${data.nickname}님은 ${fixedTargetTime}까지 설정한 목표("${data.mainGoal}")를 성공적으로 이행하며 전문성을 인정받았습니다.</li>
-                        <li><strong>핵심 요인:</strong> 전략적인 강점('${data.myStrength || '미입력된 강점'}') 활용과 장애물('${data.obstacle || '없음'}') 사전 제거 노력이 성과 달성의 핵심 요인이었습니다.</li>
-                        <li><strong>향후 계획:</strong> 목표 달성 후, 업계 평균 대비 15% 이상 높은 만족도와 함께 다음 단계의 경력 설계를 시작했습니다.</li>
-                    </ul>
-                `;
-
-                // 단계별 상세 로드맵 생성 (수직 타임라인 사용)
-                const roadmapContent = generatePhasedRoadmap(targetYear, data);
-                
-                const mockResult = {
-                    scenario: scenarioHtml,
-                    roadmap: roadmapContent
-                };
-                
-                // 통신 오류 모달 표시
-                showModal('error', `API 통신에 실패했습니다. (임시 데이터 표시): ${error.message}`);
-                
-                // 임시 데이터 표시
-                displayResultView(data, mockResult);
-            });
-        }
-        
-        /**
-         * 폼 데이터를 초기화하고 폼 뷰로 돌아가는 함수
-         */
-        function resetForm() {
-            document.getElementById('nickname').value = '';
-            document.getElementById('mainGoal').value = '';
-            document.getElementById('targetTime').value = '';
-            document.getElementById('myStrength').value = '';
-            document.getElementById('obstacle').value = '';
-
-            resultView.classList.add('hidden');
-            formView.classList.remove('hidden');
-        }
-        
-    </script>
-</body>
-</html>
+                obstacle: document
