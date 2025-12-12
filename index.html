@@ -220,7 +220,7 @@
         }
         
         /**
-         * 입력 폼을 숨기고 결과 뷰를 표시하며 데이터를 채웁니다.
+         * 입력 폼을 숨기고 결과 뷰를 표시하며 데이터를 채웁니다. (HTML 렌더링 허용)
          */
         function displayResultView(data, resultData) {
             const targetYearMatch = data.targetTime.match(/(\d{4})/);
@@ -240,11 +240,10 @@
         }
 
         /**
-         * 단계별 (Phase) 로드맵 생성 함수 (수직 타임라인 구현)
+         * 단계별 (Phase) 로드맵 생성 함수 (수직 타임라인으로 변경됨)
          * @returns {string} - HTML 형식의 수직 단계별 계획.
          */
         function generatePhasedRoadmap(year, data) {
-            // 
             let planHtml = `<div class="vertical-timeline">`;
 
             const mainGoal = data.mainGoal;
@@ -252,12 +251,12 @@
             const obstacle = data.obstacle || '없음';
             const currentYear = new Date().getFullYear();
 
-            // 목표 연도 1년(1월~12월)을 4개월씩 3단계로 나눕니다.
+            // 현재 연도와 목표 연도가 같거나 차이가 크지 않더라도, 무조건 1년 플랜을 생성
             const phases = [
                 {
                     title: "1단계",
                     subtitle: "기초 설계 및 습관 구축",
-                    period: `${year}년 1월 ~ 4월`, 
+                    period: `${year}년 1월 ~ 4월`, // 4개월
                     color: "border-green-500",
                     icon: "🚀",
                     activities: [
@@ -269,7 +268,7 @@
                 {
                     title: "2단계",
                     subtitle: "중간 프로젝트 및 실력 증진",
-                    period: `${year}년 5월 ~ 8월`, 
+                    period: `${year}년 5월 ~ 8월`, // 4개월
                     color: "border-yellow-500",
                     icon: "🚧",
                     activities: [
@@ -281,7 +280,7 @@
                 {
                     title: "3단계",
                     subtitle: "최종 검토 및 성과 창출",
-                    period: `${year}년 9월 ~ 12월`, 
+                    period: `${year}년 9월 ~ 12월`, // 4개월
                     color: "border-red-500",
                     icon: "🏆",
                     activities: [
@@ -293,7 +292,7 @@
             ];
 
             phases.forEach((phase, index) => {
-                const activityList = phase.activities.map(activity => `<li class="ml-1">${activity}</li>`).join('');
+                const activityList = phase.activities.map(activity => `<li>${activity}</li>`).join('');
                 
                 planHtml += `
                     <div class="phase-item">
