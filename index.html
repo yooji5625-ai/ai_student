@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI 미래 설계 스테이션 (Future Blueprint)</title>
+    <title>새해 목표 달성 플랜 (New Year Goal Plan)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         /* 커스텀 폰트 및 기본 설정 */
@@ -41,50 +41,50 @@
 
         <div id="formView" class="transition-opacity duration-500">
             <h1 class="text-3xl md:text-4xl font-extrabold text-white uppercase tracking-wider text-center pb-3 mb-6 border-b-2 border-yellow-400">
-                AI 미래 설계 스테이션 
+                새해 목표 달성 플랜
             </h1>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                 <div class="flex flex-col">
                     <label for="nickname" class="text-yellow-400 font-bold mb-1 uppercase text-sm">닉네임</label>
                     <input type="text" id="nickname" placeholder="선수명 (닉네임)" required
-                           class="p-3 bg-gray-700 text-white rounded-lg border border-gray-600 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 transition duration-300">
+                            class="p-3 bg-gray-700 text-white rounded-lg border border-gray-600 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 transition duration-300">
                 </div>
 
                 <div class="flex flex-col">
-                    <label for="targetTime" class="text-yellow-400 font-bold mb-1 uppercase text-sm">달성 희망 시점 (예: 2028년 12월)</label>
-                    <input type="text" id="targetTime" placeholder="목표 달성 데드라인" required
-                           class="p-3 bg-gray-700 text-white rounded-lg border border-gray-600 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 transition duration-300">
+                    <label for="targetTime" class="text-yellow-400 font-bold mb-1 uppercase text-sm">달성 희망 시점 (예: 2026년)</label>
+                    <input type="text" id="targetTime" placeholder="2026년 (년도만 입력)" required
+                            class="p-3 bg-gray-700 text-white rounded-lg border border-gray-600 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 transition duration-300">
                 </div>
                 
                 <div class="flex flex-col md:col-span-2">
                     <label for="mainGoal" class="text-yellow-400 font-bold mb-1 uppercase text-sm">현재 가장 중요한 목표</label>
                     <textarea id="mainGoal" placeholder="구체적인 목표를 설명해 주세요." required
-                              class="p-3 bg-gray-700 text-white rounded-lg border border-gray-600 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 transition duration-300 resize-y min-h-[100px]"></textarea>
+                                    class="p-3 bg-gray-700 text-white rounded-lg border border-gray-600 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 transition duration-300 resize-y min-h-[100px]"></textarea>
                 </div>
 
                 <div class="flex flex-col">
                     <label for="myStrength" class="text-yellow-400 font-bold mb-1 uppercase text-sm">현재 나의 강점</label>
                     <textarea id="myStrength" placeholder="목표 달성에 도움이 될 강점/자원"
-                              class="p-3 bg-gray-700 text-white rounded-lg border border-gray-600 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 transition duration-300 resize-y min-h-[100px]"></textarea>
+                                    class="p-3 bg-gray-700 text-white rounded-lg border border-gray-600 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 transition duration-300 resize-y min-h-[100px]"></textarea>
                 </div>
 
                 <div class="flex flex-col">
                     <label for="obstacle" class="text-yellow-400 font-bold mb-1 uppercase text-sm">장애물 (선택 사항)</label>
                     <textarea id="obstacle" placeholder="목표 달성을 가로막는 요소"
-                              class="p-3 bg-gray-700 text-white rounded-lg border border-gray-600 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 transition duration-300 resize-y min-h-[100px]"></textarea>
+                                    class="p-3 bg-gray-700 text-white rounded-lg border border-gray-600 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 transition duration-300 resize-y min-h-[100px]"></textarea>
                 </div>
             </div>
             
             <button onclick="register()"
-                    class="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-lg uppercase rounded-lg shadow-xl transition duration-300 transform hover:scale-[1.01] focus:outline-none focus:ring-4 focus:ring-blue-500 focus:ring-opacity-50">
+                            class="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-lg uppercase rounded-lg shadow-xl transition duration-300 transform hover:scale-[1.01] focus:outline-none focus:ring-4 focus:ring-blue-500 focus:ring-opacity-50">
                 미래 생성 (Go!)
             </button>
         </div>
 
         <div id="resultView" class="hidden transition-opacity duration-500">
             <h1 class="text-3xl md:text-4xl font-extrabold text-white uppercase tracking-wider text-center pb-3 mb-6 border-b-2 border-yellow-400">
-                ✅ AI 미래 설계 결과
+                ✅ 새해 목표 달성 결과
             </h1>
             
             <div class="bg-gray-700 border-2 border-yellow-400 rounded-lg p-6">
@@ -96,15 +96,15 @@
                 <div class="mb-4">
                     <label class="text-white font-medium block mb-2 text-lg">✨ AI 창작 미래 시나리오 (3줄 요약)</label>
                     <div id="scenarioResult"
-                         class="bg-gray-900 p-4 rounded-lg text-gray-300 text-base border-l-4 border-yellow-400 min-h-[100px] custom-scrollbar overflow-y-auto max-h-60 animate-pulse">
+                            class="bg-gray-900 p-4 rounded-lg text-gray-300 text-base border-l-4 border-yellow-400 min-h-[100px] custom-scrollbar overflow-y-auto max-h-60 animate-pulse">
                         데이터 로딩 중...
                     </div>
                 </div>
 
                 <div>
-                    <label class="text-white font-medium block mb-2 text-lg">🗺️ 미래 목표 달성 로드맵 (단계별)</label>
+                    <label class="text-white font-medium block mb-2 text-lg">🗺️ 새해 목표 달성 1년 플랜 (월별)</label>
                     <div id="roadmapResult"
-                         class="bg-gray-900 p-4 rounded-lg text-gray-300 text-base min-h-[100px] custom-scrollbar overflow-y-auto max-h-96 animate-pulse">
+                            class="bg-gray-900 p-4 rounded-lg text-gray-300 text-base min-h-[100px] custom-scrollbar overflow-y-auto max-h-96 animate-pulse">
                         데이터 로딩 중...
                     </div>
                 </div>
@@ -112,11 +112,11 @@
 
             <div class="flex flex-col sm:flex-row gap-4 mt-8">
                 <button id="resetButton" onclick="resetForm()"
-                        class="flex-1 py-3 bg-gray-600 hover:bg-gray-700 text-white font-bold rounded-lg transition duration-300">
+                                class="flex-1 py-3 bg-gray-600 hover:bg-gray-700 text-white font-bold rounded-lg transition duration-300">
                     새로운 설계 시작 (초기화)
                 </button>
                 <button onclick="showModal('saveResult')"
-                        class="flex-1 py-3 bg-green-500 hover:bg-green-600 text-white font-bold rounded-lg transition duration-300">
+                                class="flex-1 py-3 bg-green-500 hover:bg-green-600 text-white font-bold rounded-lg transition duration-300">
                     결과 저장 (FireStore 연동 예정)
                 </button>
             </div>
@@ -129,7 +129,7 @@
             <p id="modalMessage" class="text-gray-300 mb-6"></p>
             <div class="flex justify-end">
                 <button onclick="hideModal()"
-                        class="px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition duration-300">
+                                class="px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition duration-300">
                     확인
                 </button>
             </div>
@@ -256,57 +256,61 @@
                 // 3. 서버 주소가 비어있거나 통신 오류 발생 시 처리 (가상 데이터 생성)
                 if (SERVER_URL === "" || !SERVER_URL.startsWith('http')) {
                     
-                    // --- 날짜 계산 및 로드맵 구성 로직 ---
+                    // --- 날짜 계산 및 로드맵 구성 로직 (사용자 요청에 따라 1년 플랜으로 강제 적용) ---
                     const startDateTime = new Date();
                     // 현재 날짜를 YYYY년 M월 D일 형식으로 포맷
                     const startDateString = `${startDateTime.getFullYear()}년 ${startDateTime.getMonth() + 1}월 ${startDateTime.getDate()}일`; 
                     
+                    // 3. 요청에 따라 timeDifferenceInMonths를 12개월(1년)로 강제 설정
+                    const timeDifferenceInMonths = 12;
+                    
+                    // 목표 연도는 사용자 입력에서 가져오지만, 로드맵은 무조건 12개월로 구성
                     const targetYearMatch = data.targetTime.match(/(\d{4})년/);
-                    const targetMonthMatch = data.targetTime.match(/(\d{1,2})월/);
+                    let targetYear = startDateTime.getFullYear() + 1; // 기본값: 내년
+                    if (targetYearMatch) {
+                        targetYear = parseInt(targetYearMatch[1]);
+                    }
+                    const fixedTargetTime = `${targetYear}년 12월`; // 목표 시점 표시를 12월로 통일
 
                     let roadmapContent = "";
-                    let timeDifferenceInMonths = 0;
-
-                    if (targetYearMatch && targetMonthMatch) {
-                        const targetYear = parseInt(targetYearMatch[1]);
-                        const targetMonth = parseInt(targetMonthMatch[1]) - 1; // JS 월은 0부터 시작
-                        const targetDate = new Date(targetYear, targetMonth, startDateTime.getDate());
-                        
-                        timeDifferenceInMonths = (targetDate.getFullYear() - startDateTime.getFullYear()) * 12 + (targetDate.getMonth() - startDateTime.getMonth());
-                        if (targetDate.getDate() < startDateTime.getDate() && targetDate.getMonth() !== startDateTime.getMonth() ) {
-                            timeDifferenceInMonths -= 1;
-                        }
-                    }
 
                     // --- AI 시나리오 (HTML 구조) ---
                     const scenarioHtml = `
-                        <div class="font-bold text-lg text-yellow-400 mb-3">✨ ${data.targetTime} 미래 성공 요약 (현실적)</div>
+                        <div class="font-bold text-lg text-yellow-400 mb-3">✨ ${targetYear}년 12월 미래 성공 요약 (현실적)</div>
                         <ul class="list-decimal ml-5 text-gray-300 space-y-1">
-                            <li><strong>목표 달성:</strong> ${data.nickname}님은 ${data.targetTime}까지 설정한 목표("${data.mainGoal}")를 성공적으로 이행하며 전문성을 인정받았습니다.</li>
+                            <li><strong>목표 달성:</strong> ${data.nickname}님은 ${fixedTargetTime}까지 설정한 목표("${data.mainGoal}")를 성공적으로 이행하며 전문성을 인정받았습니다.</li>
                             <li><strong>핵심 요인:</strong> 전략적인 강점(${data.myStrength || '미입력된 강점'}) 활용과 장애물(${data.obstacle || '없음'}) 사전 제거 노력이 성과 달성의 핵심 요인이었습니다.</li>
                             <li><strong>향후 계획:</strong> 목표 달성 후, 업계 평균 대비 15% 이상 높은 만족도와 함께 다음 단계의 경력 설계를 시작했습니다.</li>
                         </ul>
                     `;
 
+                    // 1년(12개월) 로드맵 분할 로직 (40%, 40%, 20% 분할)
+                    // 1단계: 4.8개월 -> 5개월 (1월 ~ 5월)
+                    // 2단계: 4.8개월 -> 5개월 (6월 ~ 10월)
+                    // 3단계: 2.4개월 -> 2개월 (11월 ~ 12월)
+                    
+                    const phase1Months = 5; // 40% (1월부터 5개월)
+                    const phase2Months = 5; // 40% (6월부터 5개월)
+                    const phase3Months = 2; // 20% (11월부터 2개월)
 
-                    if (timeDifferenceInMonths >= 3) {
-                        // **3개월 이상 남았을 경우: 월별 계획 (HTML 구조 적용)**
-                        let endMonth1 = new Date(startDateTime);
-                        endMonth1.setMonth(endMonth1.getMonth() + Math.floor(timeDifferenceInMonths * 0.4)); // 40% 지점
-                        let endMonth2 = new Date(startDateTime);
-                        endMonth2.setMonth(endMonth2.getMonth() + Math.floor(timeDifferenceInMonths * 0.8)); // 80% 지점
+                    // Phase 1 종료 시점 (시작 월 + 5개월)
+                    let endMonth1 = new Date(startDateTime);
+                    endMonth1.setMonth(startDateTime.getMonth() + phase1Months); 
+                    const endPhase1 = `${endMonth1.getFullYear()}년 ${endMonth1.getMonth() + 1}월`;
 
-                        const endPhase1 = `${endMonth1.getFullYear()}년 ${endMonth1.getMonth() + 1}월`;
-                        const endPhase2 = `${endMonth2.getFullYear()}년 ${endMonth2.getMonth() + 1}월`;
+                    // Phase 2 종료 시점 (Phase 1 종료 월 + 5개월)
+                    let endMonth2 = new Date(startDateTime);
+                    endMonth2.setMonth(startDateTime.getMonth() + phase1Months + phase2Months); 
+                    const endPhase2 = `${endMonth2.getFullYear()}년 ${endMonth2.getMonth() + 1}월`;
 
 
-                        roadmapContent = `<div class="font-bold text-lg text-yellow-400 mb-3">[🗺️ 미래 목표 달성 로드맵 (월별 계획)]</div>
-                            <p class="text-white mb-4"><strong>🗓️ 계획 기간:</strong> ${startDateString} ~ ${data.targetTime}<br><strong>🎯 최종 목표:</strong> ${data.mainGoal}</p>
+                    roadmapContent = `<div class="font-bold text-lg text-yellow-400 mb-3">[🗺️ 새해 목표 달성 1년 로드맵 (12개월 집중 플랜)]</div>
+                            <p class="text-white mb-4"><strong>🗓️ 계획 기간:</strong> ${startDateString} ~ ${fixedTargetTime}<br><strong>🎯 최종 목표:</strong> ${data.mainGoal}</p>
 
                             <div class="bg-gray-800 p-4 rounded-xl border-l-4 border-green-500 shadow-md">
-                                <div class="font-bold text-green-400 text-xl mb-2">✅ 1단계: 핵심 역량 집중 강화 (${startDateString} ~ ${endPhase1})</div>
+                                <div class="font-bold text-green-400 text-xl mb-2">✅ 1단계: 핵심 역량 집중 강화 (시작 ~ ${endPhase1})</div>
                                 <ul class="roadmap-list space-y-1">
-                                    <li><strong>기간:</strong> 약 ${Math.floor(timeDifferenceInMonths * 0.4)}개월간. 목표 달성에 필요한 기본 지식 및 기술을 완벽히 습득하는 시기입니다.</li>
+                                    <li><strong>기간:</strong> 약 ${phase1Months}개월간. 목표 달성에 필요한 기본 지식 및 기술을 완벽히 습득하는 시기입니다.</li>
                                     <li><strong>활동:</strong> ${data.myStrength || '핵심 강점'} 관련 최고 레벨의 전문 교육을 월별 40시간 이상 이수. 포트폴리오 초안 준비.</li>
                                     <li><strong>마일스톤:</strong> 중간 목표 2가지 설정 및 이행 완료.</li>
                                 </ul>
@@ -317,7 +321,7 @@
                             <div class="bg-gray-800 p-4 rounded-xl border-l-4 border-orange-500 shadow-md">
                                 <div class="font-bold text-orange-400 text-xl mb-2">🚧 2단계: 실전 적용 및 장애물 제거 (${endPhase1} ~ ${endPhase2})</div>
                                 <ul class="roadmap-list space-y-1">
-                                    <li><strong>기간:</strong> 약 ${Math.floor(timeDifferenceInMonths * 0.4)}개월간. 실무 프로젝트를 통해 능력을 검증하고 약점을 보완합니다.</li>
+                                    <li><strong>기간:</strong> 약 ${phase2Months}개월간. 실무 프로젝트를 통해 능력을 검증하고 약점을 보완합니다.</li>
                                     <li><strong>활동:</strong> 실무 규모의 프로젝트에 목표를 적용하고, ${data.obstacle || '장애물'} 제거를 위한 월별 전략 실행 및 피드백 반영.</li>
                                     <li><strong>마일스톤:</strong> 최종 목표 달성률 50% 검증 및 피드백 3회 반영.</li>
                                 </ul>
@@ -326,52 +330,14 @@
                             <hr class="my-6 border-gray-600">
 
                             <div class="bg-gray-800 p-4 rounded-xl border-l-4 border-red-500 shadow-md">
-                                <div class="font-bold text-red-400 text-xl mb-2">🚀 3단계: 최종 점검 및 달성 (${endPhase2} ~ ${data.targetTime})</div>
+                                <div class="font-bold text-red-400 text-xl mb-2">🚀 3단계: 최종 점검 및 목표 달성 (${endPhase2} ~ ${fixedTargetTime})</div>
                                 <ul class="roadmap-list space-y-1">
-                                    <li><strong>기간:</strong> 남은 기간. 최종 목표 달성을 위한 마지막 수정 및 보완 단계입니다.</li>
+                                    <li><strong>기간:</strong> 약 ${phase3Months}개월간. 최종 목표 달성을 위한 마지막 수정 및 보완 단계입니다.</li>
                                     <li><strong>활동:</strong> 최종 결과물 완성도를 높이기 위한 최종 수정 작업 진행. 경력 포트폴리오 완성.</li>
-                                    <li><strong>마일스톤:</strong> ${data.targetTime}에 목표 달성 완료 보고서 제출 및 다음 비전 수립.</li>
+                                    <li><strong>마일스톤:</strong> ${fixedTargetTime} 목표 달성 완료 보고서 제출 및 다음 비전 수립.</li>
                                 </ul>
                             </div>`;
-                    } else {
-                        // **2개월 이하 남았을 경우: 주간/일별 계획 (HTML 구조 적용)**
-                        const targetWeek = Math.max(Math.ceil((timeDifferenceInMonths * 30.44) / 7), 1); 
-
-                        roadmapContent = `<div class="font-bold text-lg text-yellow-400 mb-3">[🗺️ 미래 목표 달성 로드맵 (주간/일별 집중 계획)]</div>
-                            <p class="text-white mb-4"><strong>🗓️ 계획 기간:</strong> ${startDateString} ~ ${data.targetTime}<br><strong>🎯 최종 목표:</strong> ${data.mainGoal}</p>
-
-                            <div class="bg-gray-800 p-4 rounded-xl border-l-4 border-green-500 shadow-md">
-                                <div class="font-bold text-green-400 text-xl mb-2">✅ 1단계: 긴급 현황 분석 및 보완 (1주차)</div>
-                                <ul class="roadmap-list space-y-1">
-                                    <li><strong>기간:</strong> ${startDateString}부터 7일간. 현황 파악과 긴급 보완에 집중합니다.</li>
-                                    <li><strong>활동:</strong> 현재 목표 달성률 긴급 점검 후, 부족한 부분에 대한 일일 집중 학습 및 실습 계획 수립.</li>
-                                    <li><strong>마일스톤:</strong> ${data.myStrength || '핵심 강점'}을 최종 결과물에 100% 반영할 방안 확정.</li>
-                                </ul>
-                            </div>
-
-                            <hr class="my-6 border-gray-600">
-
-                            <div class="bg-gray-800 p-4 rounded-xl border-l-4 border-orange-500 shadow-md">
-                                <div class="font-bold text-orange-400 text-xl mb-2">🚧 2단계: 주간 단위 최종 실행 (2주차 ~ ${targetWeek}주차)</div>
-                                <ul class="roadmap-list space-y-1">
-                                    <li><strong>기간:</strong> 목표 시점 직전 주까지 주간 단위로 실행. 실행 속도와 완성도를 높이는 것이 중요합니다.</li>
-                                    <li><strong>활동:</strong> ${data.obstacle || '남은 장애물'}을 매일 2시간씩 집중적으로 해결하는 작업 진행. 최종 결과물 제작 속도 최대화.</li>
-                                    <li><strong>마일스톤:</strong> 목표 달성을 위한 모든 필수 요소 90% 완성.</li>
-                                </ul>
-                            </div>
-
-                            <hr class="my-6 border-gray-600">
-
-                            <div class="bg-gray-800 p-4 rounded-xl border-l-4 border-red-500 shadow-md">
-                                <div class="font-bold text-red-400 text-xl mb-2">🚀 3단계: 최종 제출 및 정리 (최종 주차)</div>
-                                <ul class="roadmap-list space-y-1">
-                                    <li><strong>기간:</strong> 최종 목표 시점까지.</li>
-                                    <li><strong>활동:</strong> 최종 결과물 검토 및 제출. 휴식 및 회고록 작성.</li>
-                                    <li><strong>마일스톤:</strong> ${data.targetTime} 목표 달성 완료. 이후 경력 계획 1차 구상.</li>
-                                </ul>
-                            </div>`;
-                    }
-
+                    
                     const mockResult = {
                         scenario: scenarioHtml,
                         roadmap: roadmapContent
