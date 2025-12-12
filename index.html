@@ -33,6 +33,24 @@
             margin-left: 1.5rem;
             color: #ccc;
         }
+        /* 월별 박스 스타일링 */
+        .month-box {
+            background-color: #1f2937; /* Darker background for separation */
+            border-left: 5px solid;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            transition: transform 0.2s;
+        }
+        .month-box:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+        .month-box-header {
+            font-weight: bold;
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+        }
     </style>
 </head>
 <body class="min-h-screen flex items-center justify-center p-4">
@@ -137,8 +155,8 @@
     </div>
 
     <script>
-        // 2. API 서버 주소 반영 완료
-        const SERVER_URL = "https://5fba4e22-38bd-4480-ae7c-4b45c60bef37-00-35tq355ifgik8.pike.replit.dev/register"; 
+        // 1. API 서버 주소 반영 완료
+        const SERVER_URL = "https://5fba4e22-38bd-4480-ae7c-4b45c60bef37-00-35tq355ifgik8.pike.replit.dev"; 
 
         // --- View Elements ---
         const formView = document.getElementById('formView');
@@ -191,7 +209,10 @@
         function displayResultView(data, resultData) {
             // 결과 헤더 정보 업데이트
             resultNickname.innerText = data.nickname;
-            resultTargetTime.innerText = data.targetTime;
+            // 목표 시점은 입력된 년도 + 12월로 표시
+            const targetYearMatch = data.targetTime.match(/(\d{4})년/);
+            const targetYear = targetYearMatch ? targetYearMatch[1] : new Date().getFullYear() + 1;
+            resultTargetTime.innerText = `${targetYear}년 12월 (1년 플랜)`;
 
             // 결과 내용 업데이트 (innerHTML을 사용하여 HTML 마크업 렌더링)
             scenarioResult.innerHTML = resultData.scenario || "AI 시나리오 결과가 없습니다.";
@@ -204,6 +225,53 @@
             // 뷰 전환: 폼 숨기기, 결과 표시
             formView.classList.add('hidden');
             resultView.classList.remove('hidden');
+        }
+
+        /**
+         * 월별 계획 생성 함수 (가상 데이터)
+         * @param {number} year - 목표 연도.
+         * @param {Object} data - 사용자 입력 데이터.
+         * @returns {string} - HTML 형식의 월별 계획.
+         */
+        function generateMonthlyPlan(year, data) {
+            let planHtml = `<div class="font-bold text-lg text-yellow-400 mb-3">[🗺️ ${year}년 월별 목표 달성 1년 플랜]</div>`;
+            planHtml += `<p class="text-white mb-4"><strong>🎯 최종 목표:</strong> ${data.mainGoal}</p>`;
+
+            const mainGoal = data.mainGoal;
+            const strength = data.myStrength || '핵심 강점';
+            const obstacle = data.obstacle || '없음';
+
+            // 월별 주요 테마 설정 (12개월 플랜)
+            const monthlyThemes = {
+                1: { title: "기초 설계 및 자료 수집", color: "border-blue-500", activity: `목표 달성을 위한 필수 자료와 참고 문헌 조사. ${mainGoal}의 범위 설정.` },
+                2: { title: "핵심 기술 학습 (1/4)", color: "border-blue-500", activity: `가장 중요한 기술/지식 분야 집중 학습. 주 20시간 학습 플랜 실행.` },
+                3: { title: "핵심 기술 학습 (2/4)", color: "border-green-500", activity: `학습 내용 기반으로 소규모 프로젝트 1개 완성. ${strength}을 활용할 방안 모색.` },
+                4: { title: "중간 점검 및 피드백", color: "border-green-500", activity: `1분기 목표 달성률 검토 및 계획 수정. 전문가 멘토 1인 컨택 시도.` },
+                5: { title: "실무 적용 프로젝트 (1/3)", color: "border-yellow-500", activity: `실제 ${mainGoal}과 관련된 실무형 프로젝트 시작. 주간 진척도 보고서 작성.` },
+                6: { title: "실무 적용 프로젝트 (2/3) 및 장애물 대응", color: "border-yellow-500", activity: `프로젝트 완성도 50% 달성. 예상되는 ${obstacle}에 대한 구체적인 대응 전략 수립 및 실행.` },
+                7: { title: "기술 심화 및 보완", color: "border-orange-500", activity: `프로젝트를 통해 발견된 약점 분야 집중 보완. 관련 최신 트렌드 벤치마킹.` },
+                8: { title: "실무 적용 프로젝트 (3/3) 마무리", color: "border-orange-500", activity: `프로젝트 최종 완성 및 내부/외부 피드백 수렴. (마일스톤: 목표 70% 달성)` },
+                9: { title: "경력/성과 포트폴리오 초안", color: "border-red-500", activity: `지금까지의 성과를 정리한 포트폴리오 초안 작성. 최종 목표 결과물의 윤곽 확정.` },
+                10: { title: "최종 결과물 제작 집중 (1/2)", color: "border-red-500", activity: `최종 목표 달성을 위한 결과물 제작에 전념. 하루 4시간 이상 집중 시간 확보.` },
+                11: { title: "최종 결과물 제작 집중 (2/2) 및 검토", color: "border-purple-500", activity: `결과물 완성도 95% 달성. 최종 검토 및 작은 오류/약점 보완.` },
+                12: { title: "최종 목표 달성 및 회고", color: "border-purple-500", activity: `최종 결과물 제출/발표 및 목표 달성 완료. 1년 플랜에 대한 상세 회고록 작성.` }
+            };
+
+            // 월별 박스 생성
+            for (let month = 1; month <= 12; month++) {
+                const theme = monthlyThemes[month];
+                planHtml += `
+                    <div class="month-box ${theme.color}">
+                        <div class="month-box-header text-blue-300">📅 ${year}년 ${month}월: ${theme.title}</div>
+                        <ul class="roadmap-list text-sm space-y-1">
+                            <li><strong>핵심 활동:</strong> ${theme.activity}</li>
+                            <li><strong>점검 사항:</strong> ${month}월 말까지 목표 대비 진척도를 반드시 확인.</li>
+                        </ul>
+                    </div>
+                `;
+            }
+
+            return planHtml;
         }
 
         /**
@@ -231,9 +299,13 @@
             scenarioResult.classList.add('animate-pulse');
             roadmapResult.classList.add('animate-pulse');
 
+            // 목표 연도 추출
+            const targetYearMatch = data.targetTime.match(/(\d{4})년/);
+            const targetYear = targetYearMatch ? parseInt(targetYearMatch[1]) : new Date().getFullYear() + 1;
+            const fixedTargetTime = `${targetYear}년 12월`; 
 
             // 2. fetch 함수를 이용한 API 통신 (POST)
-            fetch(SERVER_URL, {
+            fetch(SERVER_URL + '/register', { // API 주소 뒤에 경로가 있다면 추가 (없다면 SERVER_URL만 사용)
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -255,24 +327,9 @@
                 
                 // 3. 통신 오류 발생 시 처리 (가상 데이터 생성 및 1년 플랜 강제 적용)
                 
-                // 로직 시작 날짜 설정
-                const startDateTime = new Date();
-                const startDateString = `${startDateTime.getFullYear()}년 ${startDateTime.getMonth() + 1}월 ${startDateTime.getDate()}일`; 
+                // --- 가상 데이터 로직 ---
                 
-                // 요청에 따라 timeDifferenceInMonths를 12개월(1년)로 강제 설정
-                const timeDifferenceInMonths = 12;
-                
-                // 목표 연도는 사용자 입력에서 가져옴
-                const targetYearMatch = data.targetTime.match(/(\d{4})년/);
-                let targetYear = startDateTime.getFullYear() + 1; // 기본값: 내년
-                if (targetYearMatch) {
-                    targetYear = parseInt(targetYearMatch[1]);
-                }
-                const fixedTargetTime = `${targetYear}년 12월`; // 목표 시점 표시를 12월로 통일 (1년 플랜 종료 시점)
-
-                let roadmapContent = "";
-
-                // --- AI 시나리오 (HTML 구조) ---
+                // AI 시나리오 생성
                 const scenarioHtml = `
                     <div class="font-bold text-lg text-yellow-400 mb-3">✨ ${targetYear}년 12월 미래 성공 요약 (현실적)</div>
                     <ul class="list-decimal ml-5 text-gray-300 space-y-1">
@@ -282,57 +339,8 @@
                     </ul>
                 `;
 
-                // 1년(12개월) 로드맵 분할 (5개월, 5개월, 2개월)
-                const phase1Months = 5; 
-                const phase2Months = 5; 
-                const phase3Months = 2; 
-
-                // Phase 1 종료 시점 (시작 월 + 5개월)
-                let endMonth1 = new Date(startDateTime);
-                endMonth1.setMonth(startDateTime.getMonth() + phase1Months); 
-                const endPhase1 = `${endMonth1.getFullYear()}년 ${endMonth1.getMonth() + 1}월`;
-
-                // Phase 2 종료 시점 (Phase 1 종료 월 + 5개월)
-                let endMonth2 = new Date(startDateTime);
-                endMonth2.setMonth(startDateTime.getMonth() + phase1Months + phase2Months); 
-                const endPhase2 = `${endMonth2.getFullYear()}년 ${endMonth2.getMonth() + 1}월`;
-
-
-                roadmapContent = `<div class="font-bold text-lg text-yellow-400 mb-3">[🗺️ 새해 목표 달성 1년 로드맵 (12개월 집중 플랜)]</div>
-                        <p class="text-white mb-4"><strong>🗓️ 계획 기간:</strong> ${startDateString} ~ ${fixedTargetTime}<br><strong>🎯 최종 목표:</strong> ${data.mainGoal}</p>
-                        
-                        
-
-                        <div class="bg-gray-800 p-4 rounded-xl border-l-4 border-green-500 shadow-md">
-                            <div class="font-bold text-green-400 text-xl mb-2">✅ 1단계: 핵심 역량 집중 강화 (시작 ~ ${endPhase1})</div>
-                            <ul class="roadmap-list space-y-1">
-                                <li><strong>기간:</strong> 약 ${phase1Months}개월간. 목표 달성에 필요한 기본 지식 및 기술을 완벽히 습득하는 시기입니다.</li>
-                                <li><strong>활동:</strong> ${data.myStrength || '핵심 강점'} 관련 최고 레벨의 전문 교육을 월별 40시간 이상 이수. 포트폴리오 초안 준비.</li>
-                                <li><strong>마일스톤:</strong> 중간 목표 2가지 설정 및 이행 완료.</li>
-                            </ul>
-                        </div>
-
-                        <hr class="my-6 border-gray-600"> 
-
-                        <div class="bg-gray-800 p-4 rounded-xl border-l-4 border-orange-500 shadow-md">
-                            <div class="font-bold text-orange-400 text-xl mb-2">🚧 2단계: 실전 적용 및 장애물 제거 (${endPhase1} ~ ${endPhase2})</div>
-                            <ul class="roadmap-list space-y-1">
-                                <li><strong>기간:</strong> 약 ${phase2Months}개월간. 실무 프로젝트를 통해 능력을 검증하고 약점을 보완합니다.</li>
-                                <li><strong>활동:</strong> 실무 규모의 프로젝트에 목표를 적용하고, ${data.obstacle || '장애물'} 제거를 위한 월별 전략 실행 및 피드백 반영.</li>
-                                <li><strong>마일스톤:</strong> 최종 목표 달성률 50% 검증 및 피드백 3회 반영.</li>
-                            </ul>
-                        </div>
-
-                        <hr class="my-6 border-gray-600">
-
-                        <div class="bg-gray-800 p-4 rounded-xl border-l-4 border-red-500 shadow-md">
-                            <div class="font-bold text-red-400 text-xl mb-2">🚀 3단계: 최종 점검 및 목표 달성 (${endPhase2} ~ ${fixedTargetTime})</div>
-                            <ul class="roadmap-list space-y-1">
-                                <li><strong>기간:</strong> 약 ${phase3Months}개월간. 최종 목표 달성을 위한 마지막 수정 및 보완 단계입니다.</li>
-                                <li><strong>활동:</strong> 최종 결과물 완성도를 높이기 위한 최종 수정 작업 진행. 경력 포트폴리오 완성.</li>
-                                <li><strong>마일스톤:</strong> ${fixedTargetTime} 목표 달성 완료 보고서 제출 및 다음 비전 수립.</li>
-                            </ul>
-                        </div>`;
+                // 월별 상세 로드맵 생성 (요청 사항 반영)
+                const roadmapContent = generateMonthlyPlan(targetYear, data);
                 
                 const mockResult = {
                     scenario: scenarioHtml,
@@ -365,4 +373,3 @@
 </body>
 
 </html>
-
