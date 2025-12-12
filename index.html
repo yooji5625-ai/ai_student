@@ -1,425 +1,423 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>새해 목표 달성 플랜 (New Year Goal Plan)</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        /* 커스텀 폰트 및 기본 설정 */
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #0d0e14; /* Dark/Space background */
-        }
-        
-        /* --- 수직 타임라인 스타일 (NEW) --- */
-        .vertical-timeline {
-            position: relative;
-            padding-left: 20px; /* 타임라인 라인 공간 */
-        }
-        /* 중앙 수직선 */
-        .vertical-timeline::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 8px;
-            width: 4px;
-            height: 100%;
-            background: #374151; /* Gray line */
-            border-radius: 2px;
-            z-index: 1;
-        }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>새해 목표 달성 플랜 (New Year Goal Plan)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* 커스텀 폰트 및 기본 설정 */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0d0e14; /* Dark/Space background */
+        }
+        
+        /* --- 수직 타임라인 스타일 (NEW) --- */
+        .vertical-timeline {
+            position: relative;
+            padding-left: 20px; /* 타임라인 라인 공간 */
+        }
+        /* 중앙 수직선 */
+        .vertical-timeline::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 8px;
+            width: 4px;
+            height: 100%;
+            background: #374151; /* Gray line */
+            border-radius: 2px;
+            z-index: 1;
+        }
 
-        /* 개별 단계 (Phase) 박스 */
-        .phase-item {
-            position: relative;
-            margin-bottom: 2.5rem; /* 간격 증가 */
-            padding-left: 30px; /* 박스를 라인 오른쪽으로 이동 */
-            z-index: 10;
-        }
-        .phase-box {
-            padding: 1.5rem;
-            border-radius: 0.75rem;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-            background-color: #1f2937; /* 배경색 */
-            border-left: 5px solid; /* 왼쪽 색상 경계 */
-        }
+        /* 개별 단계 (Phase) 박스 */
+        .phase-item {
+            position: relative;
+            margin-bottom: 2.5rem; /* 간격 증가 */
+            padding-left: 30px; /* 박스를 라인 오른쪽으로 이동 */
+            z-index: 10;
+        }
+        .phase-box {
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            background-color: #1f2937; /* 배경색 */
+            border-left: 5px solid; /* 왼쪽 색상 경계 */
+        }
 
-        /* 단계 아이콘 (원형) */
-        .phase-icon {
-            position: absolute;
-            left: 0px; /* 수직선 중앙에 위치 */
-            top: 0px;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background-color: #007bff; /* 파란색 */
-            border: 4px solid #0d0e14; /* 배경색과 동일한 테두리로 라인 위에 떠 있게 */
-            z-index: 20;
-        }
+        /* 단계 아이콘 (원형) */
+        .phase-icon {
+            position: absolute;
+            left: 0px; /* 수직선 중앙에 위치 */
+            top: 0px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: #007bff; /* 파란색 */
+            border: 4px solid #0d0e14; /* 배경색과 동일한 테두리로 라인 위에 떠 있게 */
+            z-index: 20;
+        }
 
-        /* 리스트 스타일 */
-        .roadmap-list {
-            list-style-type: disc;
-            margin-left: 1.5rem;
-            color: #ccc;
-            font-size: 0.875rem;
-        }
-        /* 단계 번호 스타일 */
-        .phase-number {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #007bff;
-            margin-bottom: 0.5rem;
-            display: block;
-        }
+        /* 리스트 스타일 */
+        .roadmap-list {
+            list-style-type: disc;
+            margin-left: 1.5rem;
+            color: #ccc;
+            font-size: 0.875rem;
+        }
+        /* 단계 번호 스타일 */
+        .phase-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #007bff;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
 
-        /* 스크롤바 스타일링 (다크 모드 최적화) */
-        .custom-scrollbar::-webkit-scrollbar {
-            width: 8px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background-color: #007bff;
-            border-radius: 4px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-            background-color: #1f2937;
-        }
-    </style>
+        /* 스크롤바 스타일링 (다크 모드 최적화) */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background-color: #007bff;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background-color: #1f2937;
+        }
+    </style>
 </head>
 <body class="min-h-screen flex items-center justify-center p-4">
 
-    <div class="w-full max-w-4xl rounded-xl shadow-2xl p-6 md:p-10 border-t-4 border-blue-500 bg-gray-800">
+    <div class="w-full max-w-4xl rounded-xl shadow-2xl p-6 md:p-10 border-t-4 border-blue-500 bg-gray-800">
 
-        <div id="formView" class="transition-opacity duration-500">
-            <h1 class="text-3xl md:text-4xl font-extrabold text-white uppercase tracking-wider text-center pb-3 mb-6 border-b-2 border-yellow-400">
-                새해 목표 달성 플랜
-            </h1>
+        <div id="formView" class="transition-opacity duration-500">
+            <h1 class="text-3xl md:text-4xl font-extrabold text-white uppercase tracking-wider text-center pb-3 mb-6 border-b-2 border-yellow-400">
+                새해 목표 달성 플랜
+            </h1>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                <div class="flex flex-col">
-                    <label for="nickname" class="text-yellow-400 font-bold mb-1 uppercase text-sm">닉네임</label>
-                    <input type="text" id="nickname" placeholder="선수명 (닉네임)" required
-                           class="p-3 bg-gray-700 text-white rounded-lg border border-gray-600 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 transition duration-300">
-                </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <div class="flex flex-col">
+                    <label for="nickname" class="text-yellow-400 font-bold mb-1 uppercase text-sm">닉네임</label>
+                    <input type="text" id="nickname" placeholder="선수명 (닉네임)" required
+                           class="p-3 bg-gray-700 text-white rounded-lg border border-gray-600 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 transition duration-300">
+                </div>
 
-                <div class="flex flex-col">
-                    <label for="targetTime" class="text-yellow-400 font-bold mb-1 uppercase text-sm">달성 희망 시점 (예: 2026년)</label>
-                    <input type="text" id="targetTime" placeholder="년도만 입력 (예: 2026)" required
-                           class="p-3 bg-gray-700 text-white rounded-lg border border-gray-600 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 transition duration-300">
-                </div>
-                
-                <div class="flex flex-col md:col-span-2">
-                    <label for="mainGoal" class="text-yellow-400 font-bold mb-1 uppercase text-sm">현재 가장 중요한 목표</label>
-                    <textarea id="mainGoal" placeholder="구체적인 목표를 설명해 주세요." required
-                                 class="p-3 bg-gray-700 text-white rounded-lg border border-gray-600 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 transition duration-300 resize-y min-h-[100px]"></textarea>
-                </div>
+                <div class="flex flex-col">
+                    <label for="targetTime" class="text-yellow-400 font-bold mb-1 uppercase text-sm">달성 희망 시점 (예: 2026년)</label>
+                    <input type="text" id="targetTime" placeholder="년도만 입력 (예: 2026)" required
+                           class="p-3 bg-gray-700 text-white rounded-lg border border-gray-600 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 transition duration-300">
+                </div>
+                
+                <div class="flex flex-col md:col-span-2">
+                    <label for="mainGoal" class="text-yellow-400 font-bold mb-1 uppercase text-sm">현재 가장 중요한 목표</label>
+                    <textarea id="mainGoal" placeholder="구체적인 목표를 설명해 주세요." required
+                                 class="p-3 bg-gray-700 text-white rounded-lg border border-gray-600 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 transition duration-300 resize-y min-h-[100px]"></textarea>
+                </div>
 
-                <div class="flex flex-col">
-                    <label for="myStrength" class="text-yellow-400 font-bold mb-1 uppercase text-sm">현재 나의 강점</label>
-                    <textarea id="myStrength" placeholder="목표 달성에 도움이 될 강점/자원"
-                                 class="p-3 bg-gray-700 text-white rounded-lg border border-gray-600 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 transition duration-300 resize-y min-h-[100px]"></textarea>
-                </div>
+                <div class="flex flex-col">
+                    <label for="myStrength" class="text-yellow-400 font-bold mb-1 uppercase text-sm">현재 나의 강점</label>
+                    <textarea id="myStrength" placeholder="목표 달성에 도움이 될 강점/자원"
+                                 class="p-3 bg-gray-700 text-white rounded-lg border border-gray-600 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 transition duration-300 resize-y min-h-[100px]"></textarea>
+                </div>
 
-                <div class="flex flex-col">
-                    <label for="obstacle" class="text-yellow-400 font-bold mb-1 uppercase text-sm">장애물 (선택 사항)</label>
-                    <textarea id="obstacle" placeholder="목표 달성을 가로막는 요소"
-                                 class="p-3 bg-gray-700 text-white rounded-lg border border-gray-600 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 transition duration-300 resize-y min-h-[100px]"></textarea>
-                </div>
-            </div>
-            
-            <button onclick="register()"
-                    class="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-lg uppercase rounded-lg shadow-xl transition duration-300 transform hover:scale-[1.01] focus:outline-none focus:ring-4 focus:ring-blue-500 focus:ring-opacity-50">
-                새해 플랜 (Go!)
-            </button>
-        </div>
+                <div class="flex flex-col">
+                    <label for="obstacle" class="text-yellow-400 font-bold mb-1 uppercase text-sm">장애물 (선택 사항)</label>
+                    <textarea id="obstacle" placeholder="목표 달성을 가로막는 요소"
+                                 class="p-3 bg-gray-700 text-white rounded-lg border border-gray-600 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 transition duration-300 resize-y min-h-[100px]"></textarea>
+                </div>
+            </div>
+            
+            <button onclick="register()"
+                    class="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-lg uppercase rounded-lg shadow-xl transition duration-300 transform hover:scale-[1.01] focus:outline-none focus:ring-4 focus:ring-blue-500 focus:ring-opacity-50">
+                새해 플랜 생성             </button>
+        </div>
 
-        <div id="resultView" class="hidden transition-opacity duration-500">
-            <h1 class="text-3xl md:text-4xl font-extrabold text-white uppercase tracking-wider text-center pb-3 mb-6 border-b-2 border-yellow-400">
-                ✅ 새해 목표 달성 결과
-            </h1>
-            
-            <div class="bg-gray-700 border-2 border-yellow-400 rounded-lg p-6">
-                <h2 class="text-2xl text-blue-400 font-bold uppercase mb-4 border-b border-gray-600 pb-2">
-                    선수: <span id="resultNickname" class="text-yellow-400"></span>
-                </h2>
-                <p class="text-gray-400 mb-6">목표 달성 시점: <span id="resultTargetTime" class="text-white"></span></p>
+        <div id="resultView" class="hidden transition-opacity duration-500">
+            <h1 class="text-3xl md:text-4xl font-extrabold text-white uppercase tracking-wider text-center pb-3 mb-6 border-b-2 border-yellow-400">
+                ✅ 새해 목표 달성 결과
+            </h1>
+            
+            <div class="bg-gray-700 border-2 border-yellow-400 rounded-lg p-6">
+                <h2 class="text-2xl text-blue-400 font-bold uppercase mb-4 border-b border-gray-600 pb-2">
+                    선수: <span id="resultNickname" class="text-yellow-400"></span>
+                </h2>
+                <p class="text-gray-400 mb-6">목표 달성 시점: <span id="resultTargetTime" class="text-white"></span></p>
 
-                <div class="mb-4">
-                    <label class="text-white font-medium block mb-2 text-lg">✨ AI 창작 미래 시나리오 (3줄 요약)</label>
-                    <div id="scenarioResult"
-                         class="bg-gray-900 p-4 rounded-lg text-gray-300 text-base border-l-4 border-yellow-400 min-h-[100px] custom-scrollbar overflow-y-auto max-h-60 animate-pulse">
-                        데이터 로딩 중...
-                    </div>
-                </div>
+                <div class="mb-4">
+                    <label class="text-white font-medium block mb-2 text-lg">✨ AI 창작 미래 시나리오 (3줄 요약)</label>
+                    <div id="scenarioResult"
+                         class="bg-gray-900 p-4 rounded-lg text-gray-300 text-base border-l-4 border-yellow-400 min-h-[100px] custom-scrollbar overflow-y-auto max-h-60 animate-pulse">
+                        데이터 로딩 중...
+                    </div>
+                </div>
 
-                <div>
-                    <label class="text-white font-medium block mb-2 text-lg">🗺️ 새해 목표 달성 1년 플랜 (수직 타임라인)</label>
-                    <p class="text-sm text-yellow-400 mb-4 font-bold">[안내] 아래는 목표 연도 1년(1월~12월) 동안의 세부 계획입니다.</p>
-                    <div id="roadmapResult"
-                         class="bg-gray-900 p-4 rounded-lg text-gray-300 text-base min-h-[100px] custom-scrollbar overflow-y-auto max-h-96 animate-pulse">
-                        데이터 로딩 중...
-                    </div>
-                </div>
-            </div>
+                <div>
+                    <label class="text-white font-medium block mb-2 text-lg">🗺️ 새해 목표 달성 1년 플랜 (수직 타임라인)</label>
+                    <p class="text-sm text-yellow-400 mb-4 font-bold">[안내] 아래는 목표 연도 1년(1월~12월) 동안의 세부 계획입니다.</p>
+                    <div id="roadmapResult"
+                         class="bg-gray-900 p-4 rounded-lg text-gray-300 text-base min-h-[100px] custom-scrollbar overflow-y-auto max-h-96 animate-pulse">
+                        데이터 로딩 중...
+                    </div>
+                </div>
+            </div>
 
-            <div class="flex flex-col sm:flex-row gap-4 mt-8">
-                <button id="resetButton" onclick="resetForm()"
-                                class="flex-1 py-3 bg-gray-600 hover:bg-gray-700 text-white font-bold rounded-lg transition duration-300">
-                    새로운 설계 시작 (초기화)
-                </button>
-                <button onclick="showModal('saveResult')"
-                                class="flex-1 py-3 bg-green-500 hover:bg-green-600 text-white font-bold rounded-lg transition duration-300">
-                    결과 저장 (FireStore 연동 예정)
-                </button>
-            </div>
-        </div>
-    </div>
+            <div class="flex flex-col sm:flex-row gap-4 mt-8">
+                <button id="resetButton" onclick="resetForm()"
+                                class="flex-1 py-3 bg-gray-600 hover:bg-gray-700 text-white font-bold rounded-lg transition duration-300">
+                    새로운 설계 시작 (초기화)
+                </button>
+                <button onclick="showModal('saveResult')"
+                                class="flex-1 py-3 bg-green-500 hover:bg-green-600 text-white font-bold rounded-lg transition duration-300">
+                    결과 저장 (FireStore 연동 예정)
+                </button>
+            </div>
+        </div>
+    </div>
 
-    <div id="customModal" class="fixed inset-0 bg-black bg-opacity-70 hidden items-center justify-center p-4 z-50">
-        <div class="bg-gray-800 rounded-xl p-6 w-full max-w-sm transform transition-all shadow-2xl border-t-4 border-blue-500">
-            <h3 id="modalTitle" class="text-xl font-bold text-yellow-400 mb-4 border-b border-gray-600 pb-2">알림</h3>
-            <p id="modalMessage" class="text-gray-300 mb-6"></p>
-            <div class="flex justify-end">
-                <button onclick="hideModal()"
-                                class="px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition duration-300">
-                    확인
-                </button>
-            </div>
-        </div>
-    </div>
+    <div id="customModal" class="fixed inset-0 bg-black bg-opacity-70 hidden items-center justify-center p-4 z-50">
+        <div class="bg-gray-800 rounded-xl p-6 w-full max-w-sm transform transition-all shadow-2xl border-t-4 border-blue-500">
+            <h3 id="modalTitle" class="text-xl font-bold text-yellow-400 mb-4 border-b border-gray-600 pb-2">알림</h3>
+            <p id="modalMessage" class="text-gray-300 mb-6"></p>
+            <div class="flex justify-end">
+                <button onclick="hideModal()"
+                                class="px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition duration-300">
+                    확인
+                </button>
+            </div>
+        </div>
+    </div>
 
-    <script>
-        // 1. API 서버 주소: 임시로 비워두어 가상 데이터 로직이 실행되도록 합니다.
-        const SERVER_URL = "";
+    <script>
+        // 1. API 서버 주소: 임시로 비워두어 가상 데이터 로직이 실행되도록 합니다.
+        const SERVER_URL = "";
 
-        // --- View Elements ---
-        const formView = document.getElementById('formView');
-        const resultView = document.getElementById('resultView');
-        const scenarioResult = document.getElementById('scenarioResult');
-        const roadmapResult = document.getElementById('roadmapResult');
-        const resultNickname = document.getElementById('resultNickname');
-        const resultTargetTime = document.getElementById('resultTargetTime');
+        // --- View Elements ---
+        const formView = document.getElementById('formView');
+        const resultView = document.getElementById('resultView');
+        const scenarioResult = document.getElementById('scenarioResult');
+        const roadmapResult = document.getElementById('roadmapResult');
+        const resultNickname = document.getElementById('resultNickname');
+        const resultTargetTime = document.getElementById('resultTargetTime');
 
-        // --- Modal Functions ---
-        const modal = document.getElementById('customModal');
-        const modalTitle = document.getElementById('modalTitle');
-        const modalMessage = document.getElementById('modalMessage');
+        // --- Modal Functions ---
+        const modal = document.getElementById('customModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalMessage = document.getElementById('modalMessage');
 
-        function showModal(type, message = '') {
-            // 모달 로직 (이전 코드와 동일)
-            if (type === 'validation') {
-                modalTitle.innerText = "🚨 필수 정보 누락";
-                modalMessage.innerText = "닉네임, 목표, 희망 시점은 미래 설계를 위한 필수 입력 사항입니다.";
-            } else if (type === 'error') {
-                modalTitle.innerText = "❌ 통신 오류";
-                modalMessage.innerText = message || "API 통신에 실패했습니다. 서버 URL 및 상태를 확인해주세요.";
-            } else if (type === 'saveResult') {
-                modalTitle.innerText = "💾 저장 기능 안내";
-                modalMessage.innerText = "이 기능은 다음 주차에 Firestore 데이터베이스 연동을 통해 구현될 예정입니다.";
-            } else {
-                modalTitle.innerText = "알림";
-                modalMessage.innerText = type;
-            }
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-        }
+        function showModal(type, message = '') {
+            // 모달 로직 (이전 코드와 동일)
+            if (type === 'validation') {
+                modalTitle.innerText = "🚨 필수 정보 누락";
+                modalMessage.innerText = "닉네임, 목표, 희망 시점은 미래 설계를 위한 필수 입력 사항입니다.";
+            } else if (type === 'error') {
+                modalTitle.innerText = "❌ 통신 오류";
+                modalMessage.innerText = message || "API 통신에 실패했습니다. 서버 URL 및 상태를 확인해주세요.";
+            } else if (type === 'saveResult') {
+                modalTitle.innerText = "💾 저장 기능 안내";
+                modalMessage.innerText = "이 기능은 다음 주차에 Firestore 데이터베이스 연동을 통해 구현될 예정입니다.";
+            } else {
+                modalTitle.innerText = "알림";
+                modalMessage.innerText = type;
+            }
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
 
-        function hideModal() {
-            // 모달 숨김 로직 (이전 코드와 동일)
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
-        }
-        
-        /**
-         * 입력 폼을 숨기고 결과 뷰를 표시하며 데이터를 채웁니다.
-         */
-        function displayResultView(data, resultData) {
-            // 목표 연도 추출 및 결과 헤더 업데이트
-            const targetYearMatch = data.targetTime.match(/(\d{4})/);
-            const targetYear = targetYearMatch ? targetYearMatch[1] : new Date().getFullYear() + 1;
+        function hideModal() {
+            // 모달 숨김 로직 (이전 코드와 동일)
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+        
+        /**
+         * 입력 폼을 숨기고 결과 뷰를 표시하며 데이터를 채웁니다.
+         */
+        function displayResultView(data, resultData) {
+            // 목표 연도 추출 및 결과 헤더 업데이트
+            const targetYearMatch = data.targetTime.match(/(\d{4})/);
+            const targetYear = targetYearMatch ? targetYearMatch[1] : new Date().getFullYear() + 1;
 
-            resultNickname.innerText = data.nickname;
-            // 1년 플랜 형식에 맞게 출력
-            resultTargetTime.innerText = `${targetYear}년 1월 1일 ~ ${targetYear}년 12월 31일 (1년 플랜)`;
+            resultNickname.innerText = data.nickname;
+            // 1년 플랜 형식에 맞게 출력
+            resultTargetTime.innerText = `${targetYear}년 1월 1일 ~ ${targetYear}년 12월 31일 (1년 플랜)`;
 
-            scenarioResult.innerHTML = resultData.scenario || "AI 시나리오 결과가 없습니다.";
-            roadmapResult.innerHTML = resultData.roadmap || "AI 로드맵 결과가 없습니다.";
+            scenarioResult.innerHTML = resultData.scenario || "AI 시나리오 결과가 없습니다.";
+            roadmapResult.innerHTML = resultData.roadmap || "AI 로드맵 결과가 없습니다.";
 
-            scenarioResult.classList.remove('animate-pulse');
-            roadmapResult.classList.remove('animate-pulse');
+            scenarioResult.classList.remove('animate-pulse');
+            roadmapResult.classList.remove('animate-pulse');
 
-            formView.classList.add('hidden');
-            resultView.classList.remove('hidden');
-        }
+            formView.classList.add('hidden');
+            resultView.classList.remove('hidden');
+        }
 
-        /**
-         * 단계별 (Phase) 로드맵 생성 함수 (수직 타임라인 구현)
-         */
-        function generatePhasedRoadmap(year, data) {
-            // 
-            let planHtml = `<div class="vertical-timeline">`;
+        /**
+         * 단계별 (Phase) 로드맵 생성 함수 (수직 타임라인 구현)
+         */
+        function generatePhasedRoadmap(year, data) {
+            // 
+            let planHtml = `<div class="vertical-timeline">`;
 
-            const mainGoal = data.mainGoal;
-            const strength = data.myStrength || '미입력된 강점';
-            const obstacle = data.obstacle || '없음';
-            const currentYear = new Date().getFullYear();
+            const mainGoal = data.mainGoal;
+            const strength = data.myStrength || '미입력된 강점';
+            const obstacle = data.obstacle || '없음';
+            const currentYear = new Date().getFullYear();
 
-            // 목표 연도 1년(1월~12월)을 4개월씩 3단계로 나눕니다.
-            const phases = [
-                {
-                    title: "1단계",
-                    subtitle: "기초 설계 및 습관 구축 (핵심 역량 집중)",
-                    period: `${year}년 1월 ~ 4월`, 
-                    color: "border-green-500",
-                    icon: "🚀",
-                    activities: [
-                        `목표 (${mainGoal}) 달성을 위한 초기 100일 계획 수립 및 검증.`,
-                        `핵심 강점 '${strength}'을 활용할 수 있는 환경 셋업 완료.`,
-                        `장애물 '${obstacle}'을 최소화하기 위한 주간 루틴 도입.`
-                    ]
-                },
-                {
-                    title: "2단계",
-                    subtitle: "중간 프로젝트 및 실력 증진 (약점 보완 집중)",
-                    period: `${year}년 5월 ~ 8월`, 
-                    color: "border-yellow-500",
-                    icon: "🚧",
-                    activities: [
-                        `중간 목표 (50% 지점) 달성 평가 및 피드백 반영.`,
-                        `실제 환경 기반의 중규모 프로젝트 1회 이상 진행.`,
-                        `취약점 극복을 위한 월 2회 전문가/멘토링 세션 참석.`
-                    ]
-                },
-                {
-                    title: "3단계",
-                    subtitle: "최종 검토 및 성과 창출 (최종 결과물 집중)",
-                    period: `${year}년 9월 ~ 12월`, 
-                    color: "border-red-500",
-                    icon: "🏆",
-                    activities: [
-                        `최종 목표 결과물 완성도를 높이기 위한 최종 수정 작업 진행.`,
-                        `1년간의 성과를 정리한 최종 포트폴리오/보고서 제작.`,
-                        `다음 연도 목표를 설정하기 위한 심층 회고 진행 및 ${year}년 목표 달성 완료.`
-                    ]
-                }
-            ];
+            // 목표 연도 1년(1월~12월)을 4개월씩 3단계로 나눕니다.
+            const phases = [
+                {
+                    title: "1단계",
+                    subtitle: "기초 설계 및 습관 구축 (핵심 역량 집중)",
+                    period: `${year}년 1월 ~ 4월`, 
+                    color: "border-green-500",
+                    icon: "🚀",
+                    activities: [
+                        `목표 (${mainGoal}) 달성을 위한 초기 100일 계획 수립 및 검증.`,
+                        `핵심 강점 '${strength}'을 활용할 수 있는 환경 셋업 완료.`,
+                        `장애물 '${obstacle}'을 최소화하기 위한 주간 루틴 도입.`
+                    ]
+                },
+                {
+                    title: "2단계",
+                    subtitle: "중간 프로젝트 및 실력 증진 (약점 보완 집중)",
+                    period: `${year}년 5월 ~ 8월`, 
+                    color: "border-yellow-500",
+                    icon: "🚧",
+                    activities: [
+                        `중간 목표 (50% 지점) 달성 평가 및 피드백 반영.`,
+                        `실제 환경 기반의 중규모 프로젝트 1회 이상 진행.`,
+                        `취약점 극복을 위한 월 2회 전문가/멘토링 세션 참석.`
+                    ]
+                },
+                {
+                    title: "3단계",
+                    subtitle: "최종 검토 및 성과 창출 (최종 결과물 집중)",
+                    period: `${year}년 9월 ~ 12월`, 
+                    color: "border-red-500",
+                    icon: "🏆",
+                    activities: [
+                        `최종 목표 결과물 완성도를 높이기 위한 최종 수정 작업 진행.`,
+                        `1년간의 성과를 정리한 최종 포트폴리오/보고서 제작.`,
+                        `다음 연도 목표를 설정하기 위한 심층 회고 진행 및 ${year}년 목표 달성 완료.`
+                    ]
+                }
+            ];
 
-            phases.forEach((phase, index) => {
-                const activityList = phase.activities.map(activity => `<li class="ml-1">${activity}</li>`).join('');
-                
-                planHtml += `
-                    <div class="phase-item">
-                        <div class="phase-icon" style="background-color: ${phase.color.replace('border-', '#').replace('500', '600')};"></div>
-                        <div class="phase-box" style="border-left-color: ${phase.color.replace('border-', '#').replace('500', '600').replace('400', '500')};">
-                            <span class="phase-number">${phase.icon} ${phase.title}</span>
-                            <div class="text-lg font-bold text-yellow-400 mb-1">${phase.subtitle}</div>
-                            <div class="text-xs text-gray-400 mb-4">${phase.period} (${currentYear}년 대비 ${year}년의 계획입니다)</div>
-                            <ul class="roadmap-list text-gray-300 space-y-2">
-                                ${activityList}
-                            </ul>
-                        </div>
-                    </div>
-                `;
-            });
+            phases.forEach((phase, index) => {
+                const activityList = phase.activities.map(activity => `<li class="ml-1">${activity}</li>`).join('');
+                
+                planHtml += `
+                    <div class="phase-item">
+                        <div class="phase-icon" style="background-color: ${phase.color.replace('border-', '#').replace('500', '600')};"></div>
+                        <div class="phase-box" style="border-left-color: ${phase.color.replace('border-', '#').replace('500', '600').replace('400', '500')};">
+                            <span class="phase-number">${phase.icon} ${phase.title}</span>
+                            <div class="text-lg font-bold text-yellow-400 mb-1">${phase.subtitle}</div>
+                            <div class="text-xs text-gray-400 mb-4">${phase.period} (${currentYear}년 대비 ${year}년의 계획입니다)</div>
+                            <ul class="roadmap-list text-gray-300 space-y-2">
+                                ${activityList}
+                            </ul>
+                        </div>
+                    </div>
+                `;
+            });
 
-            planHtml += `</div>`;
-            return planHtml;
-        }
+            planHtml += `</div>`;
+            return planHtml;
+        }
 
-        /**
-         * '새해 플랜랜' 버튼 클릭 시 실행되는 함수
-         */
-        function register() {
-            // 1. 입력 필드의 데이터 수집
-            const data = {
-                nickname: document.getElementById('nickname').value.trim(),
-                mainGoal: document.getElementById('mainGoal').value.trim(),
-                targetTime: document.getElementById('targetTime').value.trim(),
-                myStrength: document.getElementById('myStrength').value.trim(),
-                obstacle: document.getElementById('obstacle').value.trim()
-            };
+        /**
+         * '새해 플랜랜' 버튼 클릭 시 실행되는 함수
+         */
+        function register() {
+            // 1. 입력 필드의 데이터 수집
+            const data = {
+                nickname: document.getElementById('nickname').value.trim(),
+                mainGoal: document.getElementById('mainGoal').value.trim(),
+                targetTime: document.getElementById('targetTime').value.trim(),
+                myStrength: document.getElementById('myStrength').value.trim(),
+                obstacle: document.getElementById('obstacle').value.trim()
+            };
 
-            // 필수 입력 필드 검증 
-            if (!data.nickname || !data.mainGoal || !data.targetTime) {
-                showModal('validation');
-                return;
-            }
+            // 필수 입력 필드 검증 
+            if (!data.nickname || !data.mainGoal || !data.targetTime) {
+                showModal('validation');
+                return;
+            }
 
-            // 목표 연도 추출
-            const targetYearMatch = data.targetTime.match(/(\d{4})/);
-            const targetYear = targetYearMatch ? parseInt(targetYearMatch[1]) : new Date().getFullYear() + 1;
-            const fixedTargetTime = `${targetYear}년 12월 31일`;
+            // 목표 연도 추출
+            const targetYearMatch = data.targetTime.match(/(\d{4})/);
+            const targetYear = targetYearMatch ? parseInt(targetYearMatch[1]) : new Date().getFullYear() + 1;
+            const fixedTargetTime = `${targetYear}년 12월 31일`;
 
-            // 결과 영역 초기화 (로딩 상태 표시)
-            scenarioResult.innerHTML = "데이터 전송 중... AI가 미래를 설계하고 있습니다. 잠시만 기다려주세요.";
-            roadmapResult.innerHTML = "로드맵 분석 중...";
-            scenarioResult.classList.add('animate-pulse');
-            roadmapResult.classList.add('animate-pulse');
+            // 결과 영역 초기화 (로딩 상태 표시)
+            scenarioResult.innerHTML = "데이터 전송 중... AI가 미래를 설계하고 있습니다. 잠시만 기다려주세요.";
+            roadmapResult.innerHTML = "로드맵 분석 중...";
+            scenarioResult.classList.add('animate-pulse');
+            roadmapResult.classList.add('animate-pulse');
 
-            // 2. fetch 함수를 이용한 API 통신 (POST) - (SERVER_URL이 비어있으므로 바로 catch 블록으로 이동)
-            fetch(SERVER_URL, { 
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', },
-                body: JSON.stringify(data) 
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then(resultData => {
-                // API 통신 성공 시
-                displayResultView(data, resultData);
-            })
-            .catch(error => {
-                console.error('API 통신 오류:', error);
-                
-                // 3. 통신 오류 발생 시 처리 (가상 데이터 생성) - 서버 URL이 비어있으므로 이 블록이 실행됨
-                
-                // AI 시나리오 생성 (HTML 구조)
-                const scenarioHtml = `
-                    <div class="font-bold text-lg text-yellow-400 mb-3">✨ ${fixedTargetTime} 미래 성공 요약 (현실적)</div>
-                    <ul class="list-decimal ml-5 text-gray-300 space-y-1">
-                        <li><strong>목표 달성:</strong> ${data.nickname}님은 ${fixedTargetTime}까지 설정한 목표("${data.mainGoal}")를 성공적으로 이행하며 전문성을 인정받았습니다.</li>
-                        <li><strong>핵심 요인:</strong> 전략적인 강점('${data.myStrength || '미입력된 강점'}') 활용과 장애물('${data.obstacle || '없음'}') 사전 제거 노력이 성과 달성의 핵심 요인이었습니다.</li>
-                        <li><strong>향후 계획:</strong> 목표 달성 후, 업계 평균 대비 15% 이상 높은 만족도와 함께 다음 단계의 경력 설계를 시작했습니다.</li>
-                    </ul>
-                `;
+            // 2. fetch 함수를 이용한 API 통신 (POST) - (SERVER_URL이 비어있으므로 바로 catch 블록으로 이동)
+            fetch(SERVER_URL, { 
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', },
+                body: JSON.stringify(data) 
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(resultData => {
+                // API 통신 성공 시
+                displayResultView(data, resultData);
+            })
+            .catch(error => {
+                console.error('API 통신 오류:', error);
+                
+                // 3. 통신 오류 발생 시 처리 (가상 데이터 생성) - 서버 URL이 비어있으므로 이 블록이 실행됨
+                
+                // AI 시나리오 생성 (HTML 구조)
+                const scenarioHtml = `
+                    <div class="font-bold text-lg text-yellow-400 mb-3">✨ ${fixedTargetTime} 미래 성공 요약 (현실적)</div>
+                    <ul class="list-decimal ml-5 text-gray-300 space-y-1">
+                        <li><strong>목표 달성:</strong> ${data.nickname}님은 ${fixedTargetTime}까지 설정한 목표("${data.mainGoal}")를 성공적으로 이행하며 전문성을 인정받았습니다.</li>
+                        <li><strong>핵심 요인:</strong> 전략적인 강점('${data.myStrength || '미입력된 강점'}') 활용과 장애물('${data.obstacle || '없음'}') 사전 제거 노력이 성과 달성의 핵심 요인이었습니다.</li>
+                        <li><strong>향후 계획:</strong> 목표 달성 후, 업계 평균 대비 15% 이상 높은 만족도와 함께 다음 단계의 경력 설계를 시작했습니다.</li>
+                    </ul>
+                `;
 
-                // 단계별 상세 로드맵 생성 (수직 타임라인 사용)
-                const roadmapContent = generatePhasedRoadmap(targetYear, data);
-                
-                const mockResult = {
-                    scenario: scenarioHtml,
-                    roadmap: roadmapContent
-                };
-                
-                // 통신 오류 모달 표시
-                showModal('error', `API 통신에 실패했습니다. (임시 데이터 표시): ${error.message}`);
-                
-                // 임시 데이터 표시
-                displayResultView(data, mockResult);
-            });
-        }
-        
-        /**
-         * 폼 데이터를 초기화하고 폼 뷰로 돌아가는 함수
-         */
-        function resetForm() {
-            document.getElementById('nickname').value = '';
-            document.getElementById('mainGoal').value = '';
-            document.getElementById('targetTime').value = '';
-            document.getElementById('myStrength').value = '';
-            document.getElementById('obstacle').value = '';
+                // 단계별 상세 로드맵 생성 (수직 타임라인 사용)
+                const roadmapContent = generatePhasedRoadmap(targetYear, data);
+                
+                const mockResult = {
+                    scenario: scenarioHtml,
+                    roadmap: roadmapContent
+                };
+                
+                // 통신 오류 모달 표시
+                showModal('error', `API 통신에 실패했습니다. (임시 데이터 표시): ${error.message}`);
+                
+                // 임시 데이터 표시
+                displayResultView(data, mockResult);
+            });
+        }
+        
+        /**
+         * 폼 데이터를 초기화하고 폼 뷰로 돌아가는 함수
+         */
+        function resetForm() {
+            document.getElementById('nickname').value = '';
+            document.getElementById('mainGoal').value = '';
+            document.getElementById('targetTime').value = '';
+            document.getElementById('myStrength').value = '';
+            document.getElementById('obstacle').value = '';
 
-            resultView.classList.add('hidden');
-            formView.classList.remove('hidden');
-        }
-        
-    </script>
+            resultView.classList.add('hidden');
+            formView.classList.remove('hidden');
+        }
+        
+    </script>
 </body>
 </html>
-
