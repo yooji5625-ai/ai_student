@@ -12,53 +12,51 @@
             font-family: 'Inter', sans-serif;
             background-color: #0d0e14; /* Dark/Space background */
         }
-        
-        /* --- 수직 타임라인 스타일 (NEW) --- */
-        .vertical-timeline {
-            position: relative;
-            padding-left: 20px; /* 타임라인 라인 공간 */
+        /* 스크롤바 스타일링 (다크 모드 최적화) */
+        .custom-scrollbar::-webkit-scrollbar {
+            height: 10px; /* 수평 스크롤바 높이 증가 */
+            width: 8px; /* 수직 스크롤바 너비 */
         }
-        /* 중앙 수직선 */
-        .vertical-timeline::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 8px;
-            width: 4px;
-            height: 100%;
-            background: #374151; /* Gray line */
-            border-radius: 2px;
-            z-index: 1;
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background-color: #007bff;
+            border-radius: 5px;
         }
-
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background-color: #1f2937;
+        }
+        /* 로드맵 컨테이너 (수평 스크롤 허용) */
+        .horizontal-roadmap {
+            display: flex;
+            overflow-x: auto;
+            white-space: nowrap; 
+            padding-bottom: 1.5rem; /* 스크롤바 공간 확보 */
+        }
         /* 개별 단계 (Phase) 박스 */
-        .phase-item {
-            position: relative;
-            margin-bottom: 2rem;
-            padding-left: 30px; /* 박스를 라인 오른쪽으로 이동 */
-            z-index: 10;
-        }
         .phase-box {
+            flex: 0 0 320px; /* 너비 증가 */
+            min-height: 280px; /* 높이 증가 */
+            margin-right: 2.5rem; /* 단계 간 간격 증가 */
             padding: 1.5rem;
             border-radius: 0.75rem;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-            background-color: #1f2937; /* 배경색 */
-            border-left: 5px solid; /* 왼쪽 색상 경계 */
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+            position: relative;
+            background-color: #1f2937; /* 배경색 명확화 */
+            border-top: 5px solid; /* 상단 색상 경계 */
+            z-index: 10; /* 연결선 위로 확실히 나오도록 설정 */
         }
-
-        /* 단계 아이콘 (원형) */
-        .phase-icon {
+        /* 단계 연결선 (수평적 흐름 강조) */
+        .phase-connector {
             position: absolute;
-            left: 0px; /* 수직선 중앙에 위치 */
-            top: 0px;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background-color: #007bff; /* 파란색 */
-            border: 4px solid #0d0e14; /* 배경색과 동일한 테두리로 라인 위에 떠 있게 */
-            z-index: 20;
+            top: 50px; /* 세로 위치 조정 */
+            right: -40px; /* 다음 박스와의 간격 절반 이상 */
+            width: 40px; /* 연결선 길이 */
+            height: 4px;
+            background-color: #4b5563; /* Gray line */
+            z-index: 5;
         }
-
+        .phase-box:last-child .phase-connector {
+            display: none; 
+        }
         /* 리스트 스타일 */
         .roadmap-list {
             list-style-type: disc;
@@ -68,9 +66,9 @@
         }
         /* 단계 번호 스타일 */
         .phase-number {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #007bff;
+            font-size: 2rem; /* 번호 크게 */
+            font-weight: 800;
+            color: #007bff; /* 파란색 강조 */
             margin-bottom: 0.5rem;
             display: block;
         }
@@ -134,20 +132,21 @@
                 </h2>
                 <p class="text-gray-400 mb-6">목표 달성 시점: <span id="resultTargetTime" class="text-white"></span></p>
 
-                <div class="mb-6">
+                <div class="mb-4">
                     <label class="text-white font-medium block mb-2 text-lg">✨ AI 창작 미래 시나리오 (3줄 요약)</label>
                     <div id="scenarioResult"
-                            class="bg-gray-900 p-4 rounded-lg text-gray-300 text-base border-l-4 border-yellow-400 min-h-[100px] overflow-y-auto max-h-60 animate-pulse">
+                            class="bg-gray-900 p-4 rounded-lg text-gray-300 text-base border-l-4 border-yellow-400 min-h-[100px] custom-scrollbar overflow-y-auto max-h-60 animate-pulse">
                         데이터 로딩 중...
                     </div>
                 </div>
 
                 <div>
-                    <label class="text-white font-medium block mb-2 text-lg">🗺️ 새해 목표 달성 1년 플랜 (수직 타임라인)</label>
-                    <p class="text-sm text-yellow-400 mb-4 font-bold">[안내] 아래는 목표 연도 1년(1월~12월) 동안의 세부 계획입니다.</p>
+                    <label class="text-white font-medium block mb-2 text-lg">🗺️ 새해 목표 달성 1년 플랜 (단계별 흐름)</label>
+                    <p class="text-sm text-yellow-400 mb-2 font-bold">[안내] 아래 로드맵은 가로로 나열되어 있으므로, **좌우로 스크롤**하여 전체 단계를 확인해 주세요.</p>
+                    
                     
                     <div id="roadmapResult"
-                            class="bg-gray-900 p-4 rounded-lg text-gray-300 text-base animate-pulse">
+                            class="bg-gray-900 p-4 rounded-lg text-gray-300 text-base custom-scrollbar overflow-x-auto">
                         데이터 로딩 중...
                     </div>
                 </div>
@@ -181,7 +180,7 @@
 
     <script>
         // 1. API 서버 주소: 반드시 실제 백엔드 API 주소로 변경해야 합니다.
-        const SERVER_URL = "YOUR_BACKEND_API_URL_HERE";
+        const SERVER_URL = "YOUR_BACKEND_API_URL_HERE"; // <-- 주소 변경 완료
 
         // --- View Elements ---
         const formView = document.getElementById('formView');
@@ -191,11 +190,14 @@
         const resultNickname = document.getElementById('resultNickname');
         const resultTargetTime = document.getElementById('resultTargetTime');
 
-        // --- Modal Functions (생략 없이 유지) ---
+        // --- Modal Functions ---
         const modal = document.getElementById('customModal');
         const modalTitle = document.getElementById('modalTitle');
         const modalMessage = document.getElementById('modalMessage');
 
+        /**
+         * 커스텀 모달을 표시하는 함수.
+         */
         function showModal(type, message = '') {
             if (type === 'validation') {
                 modalTitle.innerText = "🚨 필수 정보 누락";
@@ -206,7 +208,8 @@
             } else if (type === 'saveResult') {
                 modalTitle.innerText = "💾 저장 기능 안내";
                 modalMessage.innerText = "이 기능은 다음 주차에 Firestore 데이터베이스 연동을 통해 구현될 예정입니다.";
-            } else {
+            }
+             else {
                 modalTitle.innerText = "알림";
                 modalMessage.innerText = type; 
             }
@@ -214,6 +217,9 @@
             modal.classList.add('flex');
         }
 
+        /**
+         * 커스텀 모달을 숨기는 함수.
+         */
         function hideModal() {
             modal.classList.add('hidden');
             modal.classList.remove('flex');
@@ -221,90 +227,100 @@
         
         /**
          * 입력 폼을 숨기고 결과 뷰를 표시하며 데이터를 채웁니다. (HTML 렌더링 허용)
+         * @param {Object} data - 사용자 입력 데이터.
+         * @param {Object} resultData - AI 결과 데이터 (HTML 마크업 포함 가능).
          */
         function displayResultView(data, resultData) {
+            // 목표 연도 추출 (정확한 4자리 숫자만 사용)
             const targetYearMatch = data.targetTime.match(/(\d{4})/);
+            // targetYear이 추출되지 않으면 현재 년도 + 1을 기본값으로 사용 (필수 입력 항목이므로 보통 추출됨)
             const targetYear = targetYearMatch ? targetYearMatch[1] : new Date().getFullYear() + 1;
             
+            // 결과 헤더 정보 업데이트: 목표 연도 1월 1일 ~ 12월 31일로 명확히 표시
             resultNickname.innerText = data.nickname;
             resultTargetTime.innerText = `${targetYear}년 1월 1일 ~ ${targetYear}년 12월 31일 (1년 플랜)`;
 
+            // 결과 내용 업데이트 (innerHTML을 사용하여 HTML 마크업 렌더링)
             scenarioResult.innerHTML = resultData.scenario || "AI 시나리오 결과가 없습니다.";
             roadmapResult.innerHTML = resultData.roadmap || "AI 로드맵 결과가 없습니다.";
 
+            // 로딩 애니메이션 제거
             scenarioResult.classList.remove('animate-pulse');
             roadmapResult.classList.remove('animate-pulse');
 
+            // 뷰 전환: 폼 숨기기, 결과 표시
             formView.classList.add('hidden');
             resultView.classList.remove('hidden');
         }
 
         /**
-         * 단계별 (Phase) 로드맵 생성 함수 (수직 타임라인으로 변경됨)
-         * @returns {string} - HTML 형식의 수직 단계별 계획.
+         * 단계별 (Phase) 로드맵 생성 함수 (가상 데이터)
+         * - 요청에 따라 플랜은 targetYear의 1년 기간(1월~12월)만을 다룹니다.
+         * @param {number} year - 목표 연도 (단순히 달성 희망 시점 년도).
+         * @param {Object} data - 사용자 입력 데이터.
+         * @returns {string} - HTML 형식의 수평 단계별 계획.
          */
         function generatePhasedRoadmap(year, data) {
-            let planHtml = `<div class="vertical-timeline">`;
+            let planHtml = `<div class="horizontal-roadmap custom-scrollbar">`;
 
             const mainGoal = data.mainGoal;
             const strength = data.myStrength || '미입력된 강점';
             const obstacle = data.obstacle || '없음';
-            const currentYear = new Date().getFullYear();
 
-            // 현재 연도와 목표 연도가 같거나 차이가 크지 않더라도, 무조건 1년 플랜을 생성
+            // 플랜 기간은 targetYear 내에서 1월부터 12월까지 12개월로 확정
             const phases = [
                 {
                     title: "1단계",
-                    subtitle: "기초 설계 및 습관 구축",
-                    period: `${year}년 1월 ~ 4월`, // 4개월
+                    subtitle: "기초 역량 강화 및 설계",
+                    period: `${year}년 1월 ~ 4월 (4개월)`, // 목표 연도의 1월부터 시작
                     color: "border-green-500",
                     icon: "🚀",
                     activities: [
-                        `목표 (${mainGoal}) 달성을 위한 초기 100일 계획 수립 및 검증.`,
-                        `핵심 강점 ${strength}을 활용할 수 있는 환경 셋업 완료.`,
-                        `장애물 ${obstacle}을 최소화하기 위한 주간 루틴 도입.`
+                        `핵심 지식 및 필수 기술 ${strength}에 대한 심화 학습 (총 학습 시간 160시간 목표).`,
+                        `목표 (${mainGoal}) 달성을 위한 구체적인 중간 목표 2가지 설정.`,
+                        `장애물 ${obstacle}을 피하기 위한 사전 자료 수집 및 환경 구축.`
                     ]
                 },
                 {
                     title: "2단계",
-                    subtitle: "중간 프로젝트 및 실력 증진",
-                    period: `${year}년 5월 ~ 8월`, // 4개월
+                    subtitle: "실무 검증 및 집중 보완",
+                    period: `${year}년 5월 ~ 8월 (4개월)`,
                     color: "border-yellow-500",
                     icon: "🚧",
                     activities: [
-                        `중간 목표 (50% 지점) 달성 평가 및 피드백 반영.`,
-                        `실제 환경 기반의 중규모 프로젝트 1회 이상 진행.`,
-                        `취약점 극복을 위한 월 2회 전문가/멘토링 세션 참석.`
+                        `실무 규모의 검증 프로젝트 시작 및 완료 (프로젝트 진척도 70% 달성).`,
+                        `월 1회 전문가 피드백을 통해 약점 (필요 시 ${obstacle} 관련) 집중 보완.`,
+                        `강점을 실제 결과로 전환하기 위한 기술 적용 실험 3회 수행.`
                     ]
                 },
                 {
                     title: "3단계",
-                    subtitle: "최종 검토 및 성과 창출",
-                    period: `${year}년 9월 ~ 12월`, // 4개월
+                    subtitle: "최종 목표 달성 및 마무리",
+                    period: `${year}년 9월 ~ 12월 (4개월)`, // 목표 연도의 12월에 종료
                     color: "border-red-500",
                     icon: "🏆",
                     activities: [
-                        `최종 목표 결과물 완성 및 목표 달성 완료 (12월 31일 마감).`,
-                        `1년간의 성과를 정리한 최종 포트폴리오/보고서 제작.`,
-                        `다음 연도 목표를 설정하기 위한 심층 회고 진행.`
+                        `최종 목표 결과물 완성도 100% 달성 및 제출 준비.`,
+                        `1년의 성과를 담은 전문 포트폴리오 완성 및 경력 정리.`,
+                        `${year}년 12월 목표 달성 회고록 작성 및 다음 비전 수립.`
                     ]
                 }
             ];
 
             phases.forEach((phase, index) => {
-                const activityList = phase.activities.map(activity => `<li>${activity}</li>`).join('');
+                let activityList = phase.activities.map(activity => `<li>${activity}</li>`).join('');
+                const titleParts = phase.title.split(':'); // 예: "1단계: 기초 강화" -> ["1단계", " 기초 강화"]
                 
                 planHtml += `
-                    <div class="phase-item">
-                        <div class="phase-icon" style="background-color: ${phase.color.replace('border-', '#').replace('500', '600')};"></div>
-                        <div class="phase-box" style="border-left-color: ${phase.color.replace('border-', '#').replace('500', '600').replace('400', '500')};">
-                            <span class="phase-number">${phase.icon} ${phase.title}</span>
-                            <div class="text-lg font-bold text-yellow-400 mb-1">${phase.subtitle}</div>
-                            <div class="text-xs text-gray-400 mb-4">${phase.period} (${currentYear}년 대비 ${year}년의 계획입니다)</div>
-                            <ul class="roadmap-list text-gray-300 space-y-2">
-                                ${activityList}
-                            </ul>
-                        </div>
+                    <div class="phase-box ${phase.color}" style="border-top-color: ${phase.color.replace('border-', '#').replace('500', '600').replace('400', '500')};">
+                        ${index < phases.length - 1 ? '<div class="phase-connector"></div>' : ''}
+                        
+                        <span class="phase-number">${phase.icon} ${titleParts[0]}</span>
+                        <div class="text-lg font-bold text-yellow-400 mb-1">${phase.subtitle}</div>
+                        <div class="text-xs text-gray-400 mb-4">${phase.period}</div>
+                        <ul class="roadmap-list text-gray-300 space-y-2">
+                            ${activityList}
+                        </ul>
                     </div>
                 `;
             });
@@ -338,11 +354,12 @@
             scenarioResult.classList.add('animate-pulse');
             roadmapResult.classList.add('animate-pulse');
 
-            // 목표 연도 추출
+            // 목표 연도 추출 (정확한 4자리 숫자만 사용)
             const targetYearMatch = data.targetTime.match(/(\d{4})/);
             const targetYear = targetYearMatch ? parseInt(targetYearMatch[1]) : new Date().getFullYear() + 1;
             
             // 2. fetch 함수를 이용한 API 통신 (POST)
+            // TODO: 실제 백엔드 API 주소로 SERVER_URL을 변경해야 합니다.
             fetch(SERVER_URL + '/register', { 
                 method: 'POST',
                 headers: {
@@ -351,8 +368,9 @@
                 body: JSON.stringify(data) 
             })
             .then(response => {
-                // SERVER_URL이 미설정되었거나 통신 오류 시 강제 오류 발생
+                // 서버 URL이 플레이스홀더로 남아있거나, Replit 주소의 서비스가 중단된 경우 오류 발생 가능성이 높습니다.
                 if (SERVER_URL === "YOUR_BACKEND_API_URL_HERE" || !response.ok) {
+                    // 서버 통신 오류 시 강제로 catch 블록으로 이동하여 mock 데이터를 사용합니다.
                     throw new Error(`HTTP error! status: ${response.status || 'Pre-Flight Failed'}`);
                 }
                 return response.json();
@@ -364,7 +382,10 @@
             .catch(error => {
                 console.error('API 통신 오류:', error);
                 
-                // 3. 통신 오류 발생 시 처리 (가상 데이터 생성)
+                // 3. 통신 오류 발생 시 처리 (가상 데이터 생성 및 1년 플랜 강제 적용)
+                
+                // --- 가상 데이터 로직 ---
+                
                 const fixedTargetTime = `${targetYear}년 12월 31일`; 
 
                 // AI 시나리오 생성
@@ -377,7 +398,7 @@
                     </ul>
                 `;
 
-                // 단계별 상세 로드맵 생성 (수직 타임라인 사용)
+                // 단계별 상세 로드맵 생성 (요청 사항 반영)
                 const roadmapContent = generatePhasedRoadmap(targetYear, data);
                 
                 const mockResult = {
@@ -385,7 +406,7 @@
                     roadmap: roadmapContent
                 };
                 
-                // 통신 오류 모달 표시
+                // 실제 통신 오류 시 모달 표시
                 showModal('error', `API 통신에 실패했습니다. (임시 데이터 표시): ${error.message}`);
                 
                 // 임시 데이터 표시
@@ -409,4 +430,5 @@
         
     </script>
 </body>
+
 </html>
