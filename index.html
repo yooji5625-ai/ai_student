@@ -257,13 +257,52 @@
                 
                 // 3. 서버 주소가 비어있거나 통신 오류 발생 시 처리 (가상 데이터 생성)
                 if (SERVER_URL === "" || !SERVER_URL.startsWith('http')) {
-                    // 현재 날짜 (2025년 12월 12일 기준)
-                    const currentDate = "2025년 12월 12일"; 
+                    // --- 날짜 계산 및 로드맵 구성 로직 ---
+                    const startDateTime = new Date();
+                    const startDateString = `${startDateTime.getFullYear()}년 ${startDateTime.getMonth() + 1}월 ${startDateTime.getDate()}일`; // 현재 날짜
                     
-                    // --- AI 결과 형식 수정 적용 ---
+                    // 목표 달성 시점 (간단하게 연도와 월만 있다고 가정)
+                    const targetYearMatch = data.targetTime.match(/(\d{4})년/);
+                    const targetMonthMatch = data.targetTime.match(/(\d{1,2})월/);
+
+                    let roadmapContent = "";
+                    let timeDifferenceInMonths = 0;
+
+                    if (targetYearMatch && targetMonthMatch) {
+                        const targetYear = parseInt(targetYearMatch[1]);
+                        const targetMonth = parseInt(targetMonthMatch[1]) - 1; // JS 월은 0부터 시작
+                        const targetDate = new Date(targetYear, targetMonth, startDateTime.getDate());
+                        
+                        // 월 차이 계산
+                        timeDifferenceInMonths = (targetDate.getFullYear() - startDateTime.getFullYear()) * 12 + (targetDate.getMonth() - startDateTime.getMonth());
+                        // 달성 시점의 일(Date)이 시작 일보다 앞설 경우 1개월 차감
+                        if (targetDate.getDate() < startDateTime.getDate() && targetDate.getMonth() !== startDateTime.getMonth() ) {
+                            timeDifferenceInMonths -= 1;
+                        }
+                    }
+
+                    if (timeDifferenceInMonths >= 3) {
+                        // **3개월 이상 남았을 경우: 월별 계획**
+                        let endMonth1 = new Date(startDateTime);
+                        endMonth1.setMonth(endMonth1.getMonth() + Math.floor(timeDifferenceInMonths * 0.4)); // 40% 지점
+                        let endMonth2 = new Date(startDateTime);
+                        endMonth2.setMonth(endMonth2.getMonth() + Math.floor(timeDifferenceInMonths * 0.8)); // 80% 지점
+
+                        const endPhase1 = `${endMonth1.getFullYear()}년 ${endMonth1.getMonth() + 1}월`;
+                        const endPhase2 = `${endMonth2.getFullYear()}년 ${endMonth2.getMonth() + 1}월`;
+
+
+                        roadmapContent = `[🗺️ 미래 목표 달성 로드맵 (월별 계획)]\n\n**🗓️ 계획 기간:** ${startDateString} ~ ${data.targetTime}\n**🎯 최종 목표:** ${data.mainGoal}\n\n**✅ 1단계: 핵심 역량 집중 강화 (${startDateString} ~ ${endPhase1})**\n* **기간:** 약 ${Math.floor(timeDifferenceInMonths * 0.4)}개월간. 목표 달성에 필요한 기본 지식 및 기술을 완벽히 습득하는 시기입니다.\n* **활동:** ${data.myStrength || '핵심 강점'} 관련 최고 레벨의 전문 교육을 월별 40시간 이상 이수. 포트폴리오 초안 준비.\n* **마일스톤:** 중간 목표 2가지 설정 및 이행 완료.\n\n\n**🚧 2단계: 실전 적용 및 장애물 제거 (${endPhase1} ~ ${endPhase2})**\n* **기간:** 약 ${Math.floor(timeDifferenceInMonths * 0.4)}개월간. 실무 프로젝트를 통해 능력을 검증하고 약점을 보완합니다.\n* **활동:** 실무 규모의 프로젝트에 목표를 적용하고, ${data.obstacle || '장애물'} 제거를 위한 월별 전략 실행 및 피드백 반영.\n* **마일스톤:** 최종 목표 달성률 50% 검증 및 피드백 3회 반영.\n\n\n**🚀 3단계: 최종 점검 및 달성 (${endPhase2} ~ ${data.targetTime})**\n* **기간:** 남은 기간. 최종 목표 달성을 위한 마지막 수정 및 보완 단계입니다.\n* **활동:** 최종 결과물 완성도를 높이기 위한 최종 수정 작업 진행. 경력 포트폴리오 완성.\n* **마일스톤:** ${data.targetTime}에 목표 달성 완료 보고서 제출 및 다음 비전 수립.`;
+                    } else {
+                        // **2개월 이하 남았을 경우: 주간/일별 계획**
+                        const targetWeek = Math.max(Math.ceil((timeDifferenceInMonths * 30.44) / 7), 1); // 남은 주차 (최소 1주)
+
+                        roadmapContent = `[🗺️ 미래 목표 달성 로드맵 (주간/일별 집중 계획)]\n\n**🗓️ 계획 기간:** ${startDateString} ~ ${data.targetTime}\n**🎯 최종 목표:** ${data.mainGoal}\n\n**✅ 1단계: 긴급 현황 분석 및 보완 (1주차)**\n* **기간:** ${startDateString}부터 7일간. 목표 달성까지 시간이 촉박하므로, 현황 파악과 긴급 보완에 집중합니다.\n* **활동:** 현재 목표 달성률을 긴급 점검하고, 부족한 부분에 대한 일일 집중 학습 및 실습 계획 수립.\n* **마일스톤:** ${data.myStrength || '핵심 강점'}을 최종 결과물에 100% 반영할 방안 확정.\n\n\n**🚧 2단계: 주간 단위 최종 실행 (2주차 ~ ${targetWeek}주차)**\n* **기간:** 목표 시점 직전까지 주간 단위로 실행. 실행 속도와 완성도를 높이는 것이 중요합니다.\n* **활동:** ${data.obstacle || '남은 장애물'}을 매일 2시간씩 집중적으로 해결하는 작업 진행. 최종 결과물 제작 속도 최대화.\n* **마일스톤:** 목표 달성을 위한 모든 필수 요소(자료, 코드, 디자인 등) 90% 완성.\n\n\n**🚀 3단계: 최종 제출 및 정리 (최종 주차)**\n* **기간:** 최종 목표 시점까지.\n* **활동:** 최종 결과물 검토 및 제출. 휴식 및 회고록 작성.\n* **마일스톤:** ${data.targetTime} 목표 달성 완료. 이후 경력 계획 1차 구상.`;
+                    }
+
                     const mockResult = {
                         scenario: `[✨ ${data.targetTime} 미래 성공 요약 (현실적)]\n\n1. ${data.nickname}님은 ${data.targetTime}까지 설정한 목표("${data.mainGoal}")를 성공적으로 이행하며 전문성을 인정받았습니다.\n2. 전략적인 강점(${data.myStrength || '미입력된 강점'}) 활용과 장애물(${data.obstacle || '없음'}) 사전 제거 노력이 성과 달성의 핵심 요인이었습니다.\n3. 목표 달성 후, 업계 평균 대비 15% 이상 높은 만족도와 함께 다음 단계의 경력 설계를 시작했습니다.`,
-                        roadmap: `[🗺️ 미래 목표 달성 로드맵]\n\n**🗓️ 현재 시점:** ${currentDate}\n**🎯 최종 목표:** ${data.mainGoal} (달성 시점: ${data.targetTime})\n\n**✅ 1단계: 초기 집중 기반 다지기 (2026년 6월까지)**\n* **목표:** 핵심 기술/지식 습득률 70% 달성 및 실무 적용 능력 검증.\n* **세부 계획:** ${data.myStrength || '핵심 강점'} 관련 온라인 코스 3개 완료 및 포트폴리오 프로젝트 1개 완성.\n* **리스크 관리:** ${data.obstacle || '예상되는 장애물'}에 대한 주간 대응 계획 수립 및 실행.\n\n\n**🚧 2단계: 중기 실행 및 검증 (2027년 12월까지)**\n* **목표:** 목표 달성 중간 점검 (KPI 50% 이상) 및 외부 네트워크 확장.\n* **세부 계획:** 직무 관련 세미나 또는 컨퍼런스 5회 이상 참여, 멘토링 프로그램 등록.\n* **피드백:** 상위 전문가 2인에게 결과물 평가 및 개선 사항 반영.\n\n\n**🚀 3단계: 최종 목표 달성 및 마무리 (달성 시점까지)**\n* **목표:** 목표"${data.mainGoal}" 최종 달성 및 결과 정리.\n* **세부 계획:** 최종 결과물 완성 및 검증, 경력 포트폴리오 업데이트.\n* **향후 계획:** 달성 후 다음 5개년 목표 수립 및 첫 단계 시작.`
+                        roadmap: roadmapContent
                     };
                     displayResultView(data, mockResult);
 
@@ -299,5 +338,4 @@
 </body>
 
 </html>
-
 
