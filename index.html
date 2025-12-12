@@ -14,12 +14,12 @@
         }
         /* 스크롤바 스타일링 (다크 모드 최적화) */
         .custom-scrollbar::-webkit-scrollbar {
-            height: 8px; /* 수평 스크롤바 높이 */
+            height: 10px; /* 수평 스크롤바 높이 증가 */
             width: 8px; /* 수직 스크롤바 너비 */
         }
         .custom-scrollbar::-webkit-scrollbar-thumb {
             background-color: #007bff;
-            border-radius: 4px;
+            border-radius: 5px;
         }
         .custom-scrollbar::-webkit-scrollbar-track {
             background-color: #1f2937;
@@ -28,38 +28,49 @@
         .horizontal-roadmap {
             display: flex;
             overflow-x: auto;
-            white-space: nowrap; /* 자식 요소가 줄바꿈되지 않도록 설정 */
-            padding-bottom: 1rem;
+            white-space: nowrap; 
+            padding-bottom: 1.5rem; /* 스크롤바 공간 확보 */
         }
         /* 개별 단계 (Phase) 박스 */
         .phase-box {
-            flex: 0 0 300px; /* 고정 너비 설정 */
-            min-height: 250px;
-            margin-right: 1.5rem;
-            padding: 1.25rem;
+            flex: 0 0 320px; /* 너비 증가 */
+            min-height: 280px; /* 높이 증가 */
+            margin-right: 2.5rem; /* 단계 간 간격 증가 */
+            padding: 1.5rem;
             border-radius: 0.75rem;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
             position: relative;
+            background-color: #1f2937; /* 배경색 명확화 */
+            border-top: 5px solid; /* 상단 색상 경계 */
+            z-index: 10; /* 연결선 위로 확실히 나오도록 설정 */
         }
         /* 단계 연결선 (수평적 흐름 강조) */
         .phase-connector {
             position: absolute;
-            top: 20px;
-            right: -25px; /* 다음 박스와의 간격 절반 */
-            width: 25px;
+            top: 50px; /* 세로 위치 조정 */
+            right: -40px; /* 다음 박스와의 간격 절반 이상 */
+            width: 40px; /* 연결선 길이 */
             height: 4px;
             background-color: #4b5563; /* Gray line */
-            z-index: 0;
+            z-index: 5;
         }
         .phase-box:last-child .phase-connector {
-            display: none; /* 마지막 박스는 연결선 없음 */
+            display: none; 
         }
         /* 리스트 스타일 */
         .roadmap-list {
             list-style-type: disc;
             margin-left: 1.5rem;
             color: #ccc;
-            font-size: 0.875rem; /* Small text */
+            font-size: 0.875rem;
+        }
+        /* 단계 번호 스타일 */
+        .phase-number {
+            font-size: 2rem; /* 번호 크게 */
+            font-weight: 800;
+            color: #007bff; /* 파란색 강조 */
+            margin-bottom: 0.5rem;
+            display: block;
         }
     </style>
 </head>
@@ -131,9 +142,10 @@
 
                 <div>
                     <label class="text-white font-medium block mb-2 text-lg">🗺️ 새해 목표 달성 1년 플랜 (단계별 흐름)</label>
+                    <p class="text-sm text-yellow-400 mb-2 font-bold">[안내] 아래 로드맵은 가로로 나열되어 있으므로, **좌우로 스크롤**하여 전체 단계를 확인해 주세요.</p>
                     
                     <div id="roadmapResult"
-                            class="bg-gray-900 p-4 rounded-lg text-gray-300 text-base min-h-[100px] custom-scrollbar custom-scrollbar overflow-x-auto">
+                            class="bg-gray-900 p-4 rounded-lg text-gray-300 text-base custom-scrollbar overflow-x-auto">
                         데이터 로딩 중...
                     </div>
                 </div>
@@ -218,12 +230,14 @@
          * @param {Object} resultData - AI 결과 데이터 (HTML 마크업 포함 가능).
          */
         function displayResultView(data, resultData) {
-            // 결과 헤더 정보 업데이트
-            resultNickname.innerText = data.nickname;
-            // 목표 시점은 입력된 년도 + 12월로 표시
-            const targetYearMatch = data.targetTime.match(/(\d{4})년/);
+            // 목표 연도 추출 (정확한 4자리 숫자만 사용)
+            const targetYearMatch = data.targetTime.match(/(\d{4})/);
+            // targetYear이 추출되지 않으면 현재 년도 + 1을 기본값으로 사용 (필수 입력 항목이므로 보통 추출됨)
             const targetYear = targetYearMatch ? targetYearMatch[1] : new Date().getFullYear() + 1;
-            resultTargetTime.innerText = `${targetYear}년 12월 (1년 플랜)`;
+            
+            // 결과 헤더 정보 업데이트: 목표 연도 1월 1일 ~ 12월 31일로 명확히 표시
+            resultNickname.innerText = data.nickname;
+            resultTargetTime.innerText = `${targetYear}년 1월 1일 ~ ${targetYear}년 12월 31일 (1년 플랜)`;
 
             // 결과 내용 업데이트 (innerHTML을 사용하여 HTML 마크업 렌더링)
             scenarioResult.innerHTML = resultData.scenario || "AI 시나리오 결과가 없습니다.";
@@ -240,7 +254,8 @@
 
         /**
          * 단계별 (Phase) 로드맵 생성 함수 (가상 데이터)
-         * @param {number} year - 목표 연도.
+         * - 요청에 따라 플랜은 targetYear의 1년 기간(1월~12월)만을 다룹니다.
+         * @param {number} year - 목표 연도 (단순히 달성 희망 시점 년도).
          * @param {Object} data - 사용자 입력 데이터.
          * @returns {string} - HTML 형식의 수평 단계별 계획.
          */
@@ -251,12 +266,14 @@
             const strength = data.myStrength || '미입력된 강점';
             const obstacle = data.obstacle || '없음';
 
+            // 플랜 기간은 targetYear 내에서 1월부터 12월까지 12개월로 확정
             const phases = [
                 {
-                    // 제목 형식 변경: 1단계
-                    title: "1단계: 기초 강화 및 설계",
-                    period: `${year}년 1월 ~ 4월 (4개월)`,
+                    title: "1단계",
+                    subtitle: "기초 역량 강화 및 설계",
+                    period: `${year}년 1월 ~ 4월 (4개월)`, // 목표 연도의 1월부터 시작
                     color: "border-green-500",
+                    icon: "🚀",
                     activities: [
                         `핵심 지식 및 필수 기술 ${strength}에 대한 심화 학습 (총 학습 시간 160시간 목표).`,
                         `목표 (${mainGoal}) 달성을 위한 구체적인 중간 목표 2가지 설정.`,
@@ -264,10 +281,11 @@
                     ]
                 },
                 {
-                    // 제목 형식 변경: 2단계
-                    title: "2단계: 실무 프로젝트 및 보완",
+                    title: "2단계",
+                    subtitle: "실무 검증 및 집중 보완",
                     period: `${year}년 5월 ~ 8월 (4개월)`,
                     color: "border-yellow-500",
+                    icon: "🚧",
                     activities: [
                         `실무 규모의 검증 프로젝트 시작 및 완료 (프로젝트 진척도 70% 달성).`,
                         `월 1회 전문가 피드백을 통해 약점 (필요 시 ${obstacle} 관련) 집중 보완.`,
@@ -275,10 +293,11 @@
                     ]
                 },
                 {
-                    // 제목 형식 변경: 3단계
-                    title: "3단계: 최종 결과물 완성 및 달성",
-                    period: `${year}년 9월 ~ 12월 (4개월)`,
+                    title: "3단계",
+                    subtitle: "최종 목표 달성 및 마무리",
+                    period: `${year}년 9월 ~ 12월 (4개월)`, // 목표 연도의 12월에 종료
                     color: "border-red-500",
+                    icon: "🏆",
                     activities: [
                         `최종 목표 결과물 완성도 100% 달성 및 제출 준비.`,
                         `1년의 성과를 담은 전문 포트폴리오 완성 및 경력 정리.`,
@@ -289,12 +308,15 @@
 
             phases.forEach((phase, index) => {
                 let activityList = phase.activities.map(activity => `<li>${activity}</li>`).join('');
-
+                const titleParts = phase.title.split(':'); // 예: "1단계: 기초 강화" -> ["1단계", " 기초 강화"]
+                
                 planHtml += `
-                    <div class="phase-box bg-gray-800 ${phase.color}">
+                    <div class="phase-box ${phase.color}" style="border-top-color: ${phase.color.replace('border-', '#').replace('500', '600').replace('400', '500')};">
                         ${index < phases.length - 1 ? '<div class="phase-connector"></div>' : ''}
-                        <div class="text-xl font-bold text-white mb-2">${phase.title.split(':')[0]} <span class="text-yellow-400">${phase.title.split(':')[1]}</span></div>
-                        <div class="text-sm text-gray-400 mb-4">${phase.period}</div>
+                        
+                        <span class="phase-number">${phase.icon} ${titleParts[0]}</span>
+                        <div class="text-lg font-bold text-yellow-400 mb-1">${phase.subtitle}</div>
+                        <div class="text-xs text-gray-400 mb-4">${phase.period}</div>
                         <ul class="roadmap-list text-gray-300 space-y-2">
                             ${activityList}
                         </ul>
@@ -331,8 +353,8 @@
             scenarioResult.classList.add('animate-pulse');
             roadmapResult.classList.add('animate-pulse');
 
-            // 목표 연도 추출
-            const targetYearMatch = data.targetTime.match(/(\d{4})년/);
+            // 목표 연도 추출 (정확한 4자리 숫자만 사용)
+            const targetYearMatch = data.targetTime.match(/(\d{4})/);
             const targetYear = targetYearMatch ? parseInt(targetYearMatch[1]) : new Date().getFullYear() + 1;
             
             // 2. fetch 함수를 이용한 API 통신 (POST)
@@ -360,7 +382,7 @@
                 
                 // --- 가상 데이터 로직 ---
                 
-                const fixedTargetTime = `${targetYear}년 12월`; 
+                const fixedTargetTime = `${targetYear}년 12월 31일`; 
 
                 // AI 시나리오 생성
                 const scenarioHtml = `
