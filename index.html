@@ -12,7 +12,7 @@
             font-family: 'Inter', sans-serif;
             background-color: #0d0e14; /* Dark/Space background */
         }
-        /* 결과 텍스트를 위한 스타일 (pre-wrap 유지) */
+        /* 텍스트 줄바꿈 스타일 유지 (HTML로 바꿨으므로 필요성은 감소) */
         .result-text {
             white-space: pre-wrap;
         }
@@ -26,6 +26,12 @@
         }
         .custom-scrollbar::-webkit-scrollbar-track {
             background-color: #1f2937;
+        }
+        /* 리스트 스타일 */
+        .roadmap-list {
+            list-style-type: disc;
+            margin-left: 1.5rem;
+            color: #ccc;
         }
     </style>
 </head>
@@ -74,8 +80,7 @@
                     class="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-lg uppercase rounded-lg shadow-xl transition duration-300 transform hover:scale-[1.01] focus:outline-none focus:ring-4 focus:ring-blue-500 focus:ring-opacity-50">
                 미래 생성 (Go!)
             </button>
-            
-            </div>
+        </div>
 
         <div id="resultView" class="hidden transition-opacity duration-500">
             <h1 class="text-3xl md:text-4xl font-extrabold text-white uppercase tracking-wider text-center pb-3 mb-6 border-b-2 border-yellow-400">
@@ -91,7 +96,7 @@
                 <div class="mb-4">
                     <label class="text-white font-medium block mb-2 text-lg">✨ AI 창작 미래 시나리오 (3줄 요약)</label>
                     <div id="scenarioResult"
-                         class="result-text bg-gray-900 p-4 rounded-lg text-gray-300 text-base border-l-4 border-yellow-400 min-h-[100px] custom-scrollbar overflow-y-auto max-h-60 animate-pulse">
+                         class="bg-gray-900 p-4 rounded-lg text-gray-300 text-base border-l-4 border-yellow-400 min-h-[100px] custom-scrollbar overflow-y-auto max-h-60 animate-pulse">
                         데이터 로딩 중...
                     </div>
                 </div>
@@ -99,7 +104,7 @@
                 <div>
                     <label class="text-white font-medium block mb-2 text-lg">🗺️ 미래 목표 달성 로드맵 (단계별)</label>
                     <div id="roadmapResult"
-                         class="result-text bg-gray-900 p-4 rounded-lg text-gray-300 text-base border-l-4 border-yellow-400 min-h-[100px] custom-scrollbar overflow-y-auto max-h-60 animate-pulse">
+                         class="bg-gray-900 p-4 rounded-lg text-gray-300 text-base min-h-[100px] custom-scrollbar overflow-y-auto max-h-96 animate-pulse">
                         데이터 로딩 중...
                     </div>
                 </div>
@@ -133,7 +138,8 @@
 
     <script>
         // 핵심 요구 사항: API 서버 주소 상수 정의
-        const SERVER_URL = "https://5fba4e22-38bd-4480-ae7c-4b45c60bef37-00-35tq355ifgik8.pike.replit.dev/register"; // << 다음 단계에서 백엔드 서버 주소를 여기에 삽입합니다.
+        // 임시로 빈 문자열로 두어 가상 데이터 로직이 실행되도록 합니다.
+        const SERVER_URL = ""; 
 
         // --- View Elements ---
         const formView = document.getElementById('formView');
@@ -150,8 +156,6 @@
 
         /**
          * 커스텀 모달을 표시하는 함수.
-         * @param {string} type - 'validation', 'error', 'nextStep', 'saveResult' 중 하나 또는 일반 메시지 문자열.
-         * @param {string=} message - 표시할 메시지 (type이 일반 메시지일 때 사용).
          */
         function showModal(type, message = '') {
             if (type === 'validation') {
@@ -160,16 +164,13 @@
             } else if (type === 'error') {
                 modalTitle.innerText = "❌ 통신 오류";
                 modalMessage.innerText = message || "API 통신에 실패했습니다. 서버 URL 및 상태를 확인해주세요.";
-            } else if (type === 'nextStep') {
-                modalTitle.innerText = "✅ 다음 단계 준비 완료";
-                modalMessage.innerText = "이 코드를 GitHub Pages에 배포하고, 다음 주차에 Backend 서버를 구축하여 SERVER_URL에 연결할 준비가 완료되었습니다!";
             } else if (type === 'saveResult') {
                 modalTitle.innerText = "💾 저장 기능 안내";
                 modalMessage.innerText = "이 기능은 다음 주차에 Firestore 데이터베이스 연동을 통해 구현될 예정입니다.";
             }
              else {
                 modalTitle.innerText = "알림";
-                modalMessage.innerText = type; // type 자체를 메시지로 사용
+                modalMessage.innerText = type; 
             }
             modal.classList.remove('hidden');
             modal.classList.add('flex');
@@ -184,18 +185,18 @@
         }
         
         /**
-         * 입력 폼을 숨기고 결과 뷰를 표시하며 데이터를 채웁니다.
+         * 입력 폼을 숨기고 결과 뷰를 표시하며 데이터를 채웁니다. (HTML 렌더링 허용)
          * @param {Object} data - 사용자 입력 데이터.
-         * @param {Object} resultData - AI 결과 데이터.
+         * @param {Object} resultData - AI 결과 데이터 (HTML 마크업 포함 가능).
          */
         function displayResultView(data, resultData) {
             // 결과 헤더 정보 업데이트
             resultNickname.innerText = data.nickname;
             resultTargetTime.innerText = data.targetTime;
 
-            // 결과 내용 업데이트
-            scenarioResult.innerText = resultData.scenario || "AI 시나리오 결과가 없습니다.";
-            roadmapResult.innerText = resultData.roadmap || "AI 로드맵 결과가 없습니다.";
+            // 결과 내용 업데이트 (innerHTML을 사용하여 HTML 마크업 렌더링)
+            scenarioResult.innerHTML = resultData.scenario || "AI 시나리오 결과가 없습니다.";
+            roadmapResult.innerHTML = resultData.roadmap || "AI 로드맵 결과가 없습니다.";
 
             // 로딩 애니메이션 제거
             scenarioResult.classList.remove('animate-pulse');
@@ -208,7 +209,6 @@
 
         /**
          * '미래 생성' 버튼 클릭 시 실행되는 함수
-         * 입력 데이터를 모아 SERVER_URL로 POST 요청을 보냅니다.
          */
         function register() {
             // 1. 입력 필드의 데이터 수집
@@ -220,15 +220,15 @@
                 obstacle: document.getElementById('obstacle').value.trim()
             };
 
-            // 필수 입력 필드 검증 (커스텀 모달 사용)
+            // 필수 입력 필드 검증 
             if (!data.nickname || !data.mainGoal || !data.targetTime) {
                 showModal('validation');
                 return;
             }
 
             // 결과 영역 초기화 (로딩 상태 표시)
-            scenarioResult.innerText = "데이터 전송 중... AI가 미래를 설계하고 있습니다. 잠시만 기다려주세요.";
-            roadmapResult.innerText = "로드맵 분석 중...";
+            scenarioResult.innerHTML = "데이터 전송 중... AI가 미래를 설계하고 있습니다. 잠시만 기다려주세요.";
+            roadmapResult.innerHTML = "로드맵 분석 중...";
             scenarioResult.classList.add('animate-pulse');
             roadmapResult.classList.add('animate-pulse');
 
@@ -239,17 +239,15 @@
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(data) // 입력 필드의 데이터를 모아 JSON 형태로 서버에 전송
+                body: JSON.stringify(data) 
             })
             .then(response => {
                 if (!response.ok) {
-                    // HTTP 4xx, 5xx 에러 처리
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 return response.json();
             })
             .then(resultData => {
-                // 정상 응답 시, AI 결과를 화면에 표시
                 displayResultView(data, resultData);
             })
             .catch(error => {
@@ -257,11 +255,12 @@
                 
                 // 3. 서버 주소가 비어있거나 통신 오류 발생 시 처리 (가상 데이터 생성)
                 if (SERVER_URL === "" || !SERVER_URL.startsWith('http')) {
+                    
                     // --- 날짜 계산 및 로드맵 구성 로직 ---
                     const startDateTime = new Date();
-                    const startDateString = `${startDateTime.getFullYear()}년 ${startDateTime.getMonth() + 1}월 ${startDateTime.getDate()}일`; // 현재 날짜
+                    // 현재 날짜를 YYYY년 M월 D일 형식으로 포맷
+                    const startDateString = `${startDateTime.getFullYear()}년 ${startDateTime.getMonth() + 1}월 ${startDateTime.getDate()}일`; 
                     
-                    // 목표 달성 시점 (간단하게 연도와 월만 있다고 가정)
                     const targetYearMatch = data.targetTime.match(/(\d{4})년/);
                     const targetMonthMatch = data.targetTime.match(/(\d{1,2})월/);
 
@@ -273,16 +272,25 @@
                         const targetMonth = parseInt(targetMonthMatch[1]) - 1; // JS 월은 0부터 시작
                         const targetDate = new Date(targetYear, targetMonth, startDateTime.getDate());
                         
-                        // 월 차이 계산
                         timeDifferenceInMonths = (targetDate.getFullYear() - startDateTime.getFullYear()) * 12 + (targetDate.getMonth() - startDateTime.getMonth());
-                        // 달성 시점의 일(Date)이 시작 일보다 앞설 경우 1개월 차감
                         if (targetDate.getDate() < startDateTime.getDate() && targetDate.getMonth() !== startDateTime.getMonth() ) {
                             timeDifferenceInMonths -= 1;
                         }
                     }
 
+                    // --- AI 시나리오 (HTML 구조) ---
+                    const scenarioHtml = `
+                        <div class="font-bold text-lg text-yellow-400 mb-3">✨ ${data.targetTime} 미래 성공 요약 (현실적)</div>
+                        <ul class="list-decimal ml-5 text-gray-300 space-y-1">
+                            <li><strong>목표 달성:</strong> ${data.nickname}님은 ${data.targetTime}까지 설정한 목표("${data.mainGoal}")를 성공적으로 이행하며 전문성을 인정받았습니다.</li>
+                            <li><strong>핵심 요인:</strong> 전략적인 강점(${data.myStrength || '미입력된 강점'}) 활용과 장애물(${data.obstacle || '없음'}) 사전 제거 노력이 성과 달성의 핵심 요인이었습니다.</li>
+                            <li><strong>향후 계획:</strong> 목표 달성 후, 업계 평균 대비 15% 이상 높은 만족도와 함께 다음 단계의 경력 설계를 시작했습니다.</li>
+                        </ul>
+                    `;
+
+
                     if (timeDifferenceInMonths >= 3) {
-                        // **3개월 이상 남았을 경우: 월별 계획**
+                        // **3개월 이상 남았을 경우: 월별 계획 (HTML 구조 적용)**
                         let endMonth1 = new Date(startDateTime);
                         endMonth1.setMonth(endMonth1.getMonth() + Math.floor(timeDifferenceInMonths * 0.4)); // 40% 지점
                         let endMonth2 = new Date(startDateTime);
@@ -292,16 +300,80 @@
                         const endPhase2 = `${endMonth2.getFullYear()}년 ${endMonth2.getMonth() + 1}월`;
 
 
-                        roadmapContent = `[🗺️ 미래 목표 달성 로드맵 (월별 계획)]\n\n**🗓️ 계획 기간:** ${startDateString} ~ ${data.targetTime}\n**🎯 최종 목표:** ${data.mainGoal}\n\n**✅ 1단계: 핵심 역량 집중 강화 (${startDateString} ~ ${endPhase1})**\n* **기간:** 약 ${Math.floor(timeDifferenceInMonths * 0.4)}개월간. 목표 달성에 필요한 기본 지식 및 기술을 완벽히 습득하는 시기입니다.\n* **활동:** ${data.myStrength || '핵심 강점'} 관련 최고 레벨의 전문 교육을 월별 40시간 이상 이수. 포트폴리오 초안 준비.\n* **마일스톤:** 중간 목표 2가지 설정 및 이행 완료.\n\n\n**🚧 2단계: 실전 적용 및 장애물 제거 (${endPhase1} ~ ${endPhase2})**\n* **기간:** 약 ${Math.floor(timeDifferenceInMonths * 0.4)}개월간. 실무 프로젝트를 통해 능력을 검증하고 약점을 보완합니다.\n* **활동:** 실무 규모의 프로젝트에 목표를 적용하고, ${data.obstacle || '장애물'} 제거를 위한 월별 전략 실행 및 피드백 반영.\n* **마일스톤:** 최종 목표 달성률 50% 검증 및 피드백 3회 반영.\n\n\n**🚀 3단계: 최종 점검 및 달성 (${endPhase2} ~ ${data.targetTime})**\n* **기간:** 남은 기간. 최종 목표 달성을 위한 마지막 수정 및 보완 단계입니다.\n* **활동:** 최종 결과물 완성도를 높이기 위한 최종 수정 작업 진행. 경력 포트폴리오 완성.\n* **마일스톤:** ${data.targetTime}에 목표 달성 완료 보고서 제출 및 다음 비전 수립.`;
-                    } else {
-                        // **2개월 이하 남았을 경우: 주간/일별 계획**
-                        const targetWeek = Math.max(Math.ceil((timeDifferenceInMonths * 30.44) / 7), 1); // 남은 주차 (최소 1주)
+                        roadmapContent = `<div class="font-bold text-lg text-yellow-400 mb-3">[🗺️ 미래 목표 달성 로드맵 (월별 계획)]</div>
+                            <p class="text-white mb-4"><strong>🗓️ 계획 기간:</strong> ${startDateString} ~ ${data.targetTime}<br><strong>🎯 최종 목표:</strong> ${data.mainGoal}</p>
 
-                        roadmapContent = `[🗺️ 미래 목표 달성 로드맵 (주간/일별 집중 계획)]\n\n**🗓️ 계획 기간:** ${startDateString} ~ ${data.targetTime}\n**🎯 최종 목표:** ${data.mainGoal}\n\n**✅ 1단계: 긴급 현황 분석 및 보완 (1주차)**\n* **기간:** ${startDateString}부터 7일간. 목표 달성까지 시간이 촉박하므로, 현황 파악과 긴급 보완에 집중합니다.\n* **활동:** 현재 목표 달성률을 긴급 점검하고, 부족한 부분에 대한 일일 집중 학습 및 실습 계획 수립.\n* **마일스톤:** ${data.myStrength || '핵심 강점'}을 최종 결과물에 100% 반영할 방안 확정.\n\n\n**🚧 2단계: 주간 단위 최종 실행 (2주차 ~ ${targetWeek}주차)**\n* **기간:** 목표 시점 직전까지 주간 단위로 실행. 실행 속도와 완성도를 높이는 것이 중요합니다.\n* **활동:** ${data.obstacle || '남은 장애물'}을 매일 2시간씩 집중적으로 해결하는 작업 진행. 최종 결과물 제작 속도 최대화.\n* **마일스톤:** 목표 달성을 위한 모든 필수 요소(자료, 코드, 디자인 등) 90% 완성.\n\n\n**🚀 3단계: 최종 제출 및 정리 (최종 주차)**\n* **기간:** 최종 목표 시점까지.\n* **활동:** 최종 결과물 검토 및 제출. 휴식 및 회고록 작성.\n* **마일스톤:** ${data.targetTime} 목표 달성 완료. 이후 경력 계획 1차 구상.`;
+                            <div class="bg-gray-800 p-4 rounded-xl border-l-4 border-green-500 shadow-md">
+                                <div class="font-bold text-green-400 text-xl mb-2">✅ 1단계: 핵심 역량 집중 강화 (${startDateString} ~ ${endPhase1})</div>
+                                <ul class="roadmap-list space-y-1">
+                                    <li><strong>기간:</strong> 약 ${Math.floor(timeDifferenceInMonths * 0.4)}개월간. 목표 달성에 필요한 기본 지식 및 기술을 완벽히 습득하는 시기입니다.</li>
+                                    <li><strong>활동:</strong> ${data.myStrength || '핵심 강점'} 관련 최고 레벨의 전문 교육을 월별 40시간 이상 이수. 포트폴리오 초안 준비.</li>
+                                    <li><strong>마일스톤:</strong> 중간 목표 2가지 설정 및 이행 완료.</li>
+                                </ul>
+                            </div>
+
+                            <hr class="my-6 border-gray-600"> 
+
+                            <div class="bg-gray-800 p-4 rounded-xl border-l-4 border-orange-500 shadow-md">
+                                <div class="font-bold text-orange-400 text-xl mb-2">🚧 2단계: 실전 적용 및 장애물 제거 (${endPhase1} ~ ${endPhase2})</div>
+                                <ul class="roadmap-list space-y-1">
+                                    <li><strong>기간:</strong> 약 ${Math.floor(timeDifferenceInMonths * 0.4)}개월간. 실무 프로젝트를 통해 능력을 검증하고 약점을 보완합니다.</li>
+                                    <li><strong>활동:</strong> 실무 규모의 프로젝트에 목표를 적용하고, ${data.obstacle || '장애물'} 제거를 위한 월별 전략 실행 및 피드백 반영.</li>
+                                    <li><strong>마일스톤:</strong> 최종 목표 달성률 50% 검증 및 피드백 3회 반영.</li>
+                                </ul>
+                            </div>
+
+                            <hr class="my-6 border-gray-600">
+
+                            <div class="bg-gray-800 p-4 rounded-xl border-l-4 border-red-500 shadow-md">
+                                <div class="font-bold text-red-400 text-xl mb-2">🚀 3단계: 최종 점검 및 달성 (${endPhase2} ~ ${data.targetTime})</div>
+                                <ul class="roadmap-list space-y-1">
+                                    <li><strong>기간:</strong> 남은 기간. 최종 목표 달성을 위한 마지막 수정 및 보완 단계입니다.</li>
+                                    <li><strong>활동:</strong> 최종 결과물 완성도를 높이기 위한 최종 수정 작업 진행. 경력 포트폴리오 완성.</li>
+                                    <li><strong>마일스톤:</strong> ${data.targetTime}에 목표 달성 완료 보고서 제출 및 다음 비전 수립.</li>
+                                </ul>
+                            </div>`;
+                    } else {
+                        // **2개월 이하 남았을 경우: 주간/일별 계획 (HTML 구조 적용)**
+                        const targetWeek = Math.max(Math.ceil((timeDifferenceInMonths * 30.44) / 7), 1); 
+
+                        roadmapContent = `<div class="font-bold text-lg text-yellow-400 mb-3">[🗺️ 미래 목표 달성 로드맵 (주간/일별 집중 계획)]</div>
+                            <p class="text-white mb-4"><strong>🗓️ 계획 기간:</strong> ${startDateString} ~ ${data.targetTime}<br><strong>🎯 최종 목표:</strong> ${data.mainGoal}</p>
+
+                            <div class="bg-gray-800 p-4 rounded-xl border-l-4 border-green-500 shadow-md">
+                                <div class="font-bold text-green-400 text-xl mb-2">✅ 1단계: 긴급 현황 분석 및 보완 (1주차)</div>
+                                <ul class="roadmap-list space-y-1">
+                                    <li><strong>기간:</strong> ${startDateString}부터 7일간. 현황 파악과 긴급 보완에 집중합니다.</li>
+                                    <li><strong>활동:</strong> 현재 목표 달성률 긴급 점검 후, 부족한 부분에 대한 일일 집중 학습 및 실습 계획 수립.</li>
+                                    <li><strong>마일스톤:</strong> ${data.myStrength || '핵심 강점'}을 최종 결과물에 100% 반영할 방안 확정.</li>
+                                </ul>
+                            </div>
+
+                            <hr class="my-6 border-gray-600">
+
+                            <div class="bg-gray-800 p-4 rounded-xl border-l-4 border-orange-500 shadow-md">
+                                <div class="font-bold text-orange-400 text-xl mb-2">🚧 2단계: 주간 단위 최종 실행 (2주차 ~ ${targetWeek}주차)</div>
+                                <ul class="roadmap-list space-y-1">
+                                    <li><strong>기간:</strong> 목표 시점 직전 주까지 주간 단위로 실행. 실행 속도와 완성도를 높이는 것이 중요합니다.</li>
+                                    <li><strong>활동:</strong> ${data.obstacle || '남은 장애물'}을 매일 2시간씩 집중적으로 해결하는 작업 진행. 최종 결과물 제작 속도 최대화.</li>
+                                    <li><strong>마일스톤:</strong> 목표 달성을 위한 모든 필수 요소 90% 완성.</li>
+                                </ul>
+                            </div>
+
+                            <hr class="my-6 border-gray-600">
+
+                            <div class="bg-gray-800 p-4 rounded-xl border-l-4 border-red-500 shadow-md">
+                                <div class="font-bold text-red-400 text-xl mb-2">🚀 3단계: 최종 제출 및 정리 (최종 주차)</div>
+                                <ul class="roadmap-list space-y-1">
+                                    <li><strong>기간:</strong> 최종 목표 시점까지.</li>
+                                    <li><strong>활동:</strong> 최종 결과물 검토 및 제출. 휴식 및 회고록 작성.</li>
+                                    <li><strong>마일스톤:</strong> ${data.targetTime} 목표 달성 완료. 이후 경력 계획 1차 구상.</li>
+                                </ul>
+                            </div>`;
                     }
 
                     const mockResult = {
-                        scenario: `[✨ ${data.targetTime} 미래 성공 요약 (현실적)]\n\n1. ${data.nickname}님은 ${data.targetTime}까지 설정한 목표("${data.mainGoal}")를 성공적으로 이행하며 전문성을 인정받았습니다.\n2. 전략적인 강점(${data.myStrength || '미입력된 강점'}) 활용과 장애물(${data.obstacle || '없음'}) 사전 제거 노력이 성과 달성의 핵심 요인이었습니다.\n3. 목표 달성 후, 업계 평균 대비 15% 이상 높은 만족도와 함께 다음 단계의 경력 설계를 시작했습니다.`,
+                        scenario: scenarioHtml,
                         roadmap: roadmapContent
                     };
                     displayResultView(data, mockResult);
@@ -309,7 +381,6 @@
                 } else {
                     // 실제 통신 오류 시 모달 표시
                     showModal('error', `통신에 실패했습니다: ${error.message}`);
-                    // 로딩 상태 초기화
                     scenarioResult.classList.remove('animate-pulse');
                     roadmapResult.classList.remove('animate-pulse');
                 }
@@ -320,22 +391,17 @@
          * 폼 데이터를 초기화하고 폼 뷰로 돌아가는 함수
          */
         function resetForm() {
-            // 폼 데이터 초기화
             document.getElementById('nickname').value = '';
             document.getElementById('mainGoal').value = '';
             document.getElementById('targetTime').value = '';
             document.getElementById('myStrength').value = '';
             document.getElementById('obstacle').value = '';
 
-            // 뷰 전환: 결과 숨기기, 폼 표시
             resultView.classList.add('hidden');
             formView.classList.remove('hidden');
-
-            console.log("폼이 초기화되고 초기 화면으로 돌아갔습니다.");
         }
         
     </script>
 </body>
 
 </html>
-
