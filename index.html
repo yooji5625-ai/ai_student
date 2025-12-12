@@ -131,6 +131,7 @@
 
                 <div>
                     <label class="text-white font-medium block mb-2 text-lg">🗺️ 새해 목표 달성 1년 플랜 (단계별 흐름)</label>
+                    
                     <div id="roadmapResult"
                             class="bg-gray-900 p-4 rounded-lg text-gray-300 text-base min-h-[100px] custom-scrollbar custom-scrollbar overflow-x-auto">
                         데이터 로딩 중...
@@ -252,6 +253,7 @@
 
             const phases = [
                 {
+                    // 제목 형식 변경: 1단계
                     title: "1단계: 기초 강화 및 설계",
                     period: `${year}년 1월 ~ 4월 (4개월)`,
                     color: "border-green-500",
@@ -262,6 +264,7 @@
                     ]
                 },
                 {
+                    // 제목 형식 변경: 2단계
                     title: "2단계: 실무 프로젝트 및 보완",
                     period: `${year}년 5월 ~ 8월 (4개월)`,
                     color: "border-yellow-500",
@@ -272,6 +275,7 @@
                     ]
                 },
                 {
+                    // 제목 형식 변경: 3단계
                     title: "3단계: 최종 결과물 완성 및 달성",
                     period: `${year}년 9월 ~ 12월 (4개월)`,
                     color: "border-red-500",
@@ -289,7 +293,7 @@
                 planHtml += `
                     <div class="phase-box bg-gray-800 ${phase.color}">
                         ${index < phases.length - 1 ? '<div class="phase-connector"></div>' : ''}
-                        <div class="text-xl font-bold text-white mb-2">${phase.title}</div>
+                        <div class="text-xl font-bold text-white mb-2">${phase.title.split(':')[0]} <span class="text-yellow-400">${phase.title.split(':')[1]}</span></div>
                         <div class="text-sm text-gray-400 mb-4">${phase.period}</div>
                         <ul class="roadmap-list text-gray-300 space-y-2">
                             ${activityList}
